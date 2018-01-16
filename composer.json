@@ -1,0 +1,15 @@
+{
+    "name": "nomensa/form-builder",
+    "type": "library",
+    "require": {
+        "laravelcollective/html": "^5.5"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Martin Joiner",
+            "email": "martin@martinjoiner.co.uk"
+        }
+    ],
+    "minimum-stability": "dev"
+}
