@@ -42,8 +42,6 @@ trait MarkerUpper
      * Converts dot-notation to brackets for use in a HTML input name attribute
      * eg 'rcoa.foo.bar' becomes 'rcoa[foo][bar]'
      *
-     * TODO PHPUnit test for this
-     *
      * @param $string
      * @return string
      */
