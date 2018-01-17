@@ -34,11 +34,33 @@ Let's use a school homework assignment as a simple example... Imagine a homework
 
 ## Getting started
 
-Installation is easy with the following steps. 
+Installation is easy with the following steps:
 
- - `composer install` package
- - Add service provider to `config/app.php`
- - Add alias to `config/app.php`
+Add the package to `composer.json` using the install command:
+
+```bash
+$ composer install ...
+```
+
+Add the service provider in `config/app.php` file:
+ 
+```php
+'providers' => [
+    ...
+    Nomensa\FormBuilder\FormBuilderServiceProvider::class,
+];
+```
+ 
+Add aliases to `config/app.php` file:
+
+```php
+'aliases' => [
+    ...
+    'FormBuilder' => App\Helpers\FormBuilder\FormBuilder::class,
+    'CSSClassFactory' => App\Helpers\FormBuilder\BootstrapCSSClassFactory::class,
+],
+```
+
  - Run `php artisan formbuilder:install`
  - Add routes declaration
  - Run db migrations to rebuild database schema
