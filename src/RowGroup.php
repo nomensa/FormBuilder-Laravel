@@ -27,7 +27,8 @@ class RowGroup
 
         // Iterate over array of rows as arrays, converting them to instances of Row
         foreach ($this->rows as $key => &$row) {
-            $row['row_name'] = $this->name . '-' . $key;
+
+            $row['row_name'] = $this->name;
 
             $row = new Row($row);
         }
@@ -36,7 +37,7 @@ class RowGroup
     /**
      * Iterates over rows, concatenating markup
      *
-     * @param Nomensa\FormBuilder\FormBuilder $form
+     * @param \Nomensa\FormBuilder\FormBuilder $form
      *
      * @return string HTML markup
      */
