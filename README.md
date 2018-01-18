@@ -82,7 +82,7 @@ Now open `/app/FormBuilder/Forms/MY-FORM/schema.json` in your editor and paste i
     "type": "dynamic",
     "rows": [
       {
-        "row_intro": "Welcome to my great form."
+        "intro": "Welcome to my great form."
       },
       {
         "columns": [

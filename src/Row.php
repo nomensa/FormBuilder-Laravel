@@ -9,7 +9,7 @@ class Row
 
     /** @var string */
     protected $title;
-    protected $row_intro;
+    protected $intro;
     protected $row_description;
     protected $notes;
     protected $component;
@@ -21,7 +21,7 @@ class Row
     public function __construct(array $row_schema)
     {
         $this->title = $row_schema['title'] ?? '';
-        $this->row_intro = $row_schema['row_intro'] ?? '';
+        $this->intro = $row_schema['intro'] ?? '';
         $this->row_description = $row_schema['row_description'] ?? '';
         $this->notes = $row_schema['notes'] ?? '';
         $this->columns = $row_schema['columns'] ?? null;
@@ -62,8 +62,8 @@ class Row
             $html .= MarkerUpper::wrapInTag($this->title, 'h2', ['class' => 'heading']);
         }
 
-        if ($this->row_intro) {
-            $html .= MarkerUpper::wrapInTag($this->row_intro, 'p');
+        if ($this->intro) {
+            $html .= MarkerUpper::wrapInTag($this->intro, 'p');
         }
 
         if ($this->row_description) {
