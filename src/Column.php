@@ -249,7 +249,7 @@ class Column
     /**
      * @param FormBuilder/FormBuilder $form
      *
-     * @return string
+     * @return Nomensa\FormBuilder\MarkUp
      */
     public function markup(FormBuilder $formBuilder, $totalCols)
     {
@@ -283,7 +283,7 @@ class Column
 
         // if access for your state determines content is hidden then don't render the field
         if ($state == 'hidden-for-learner' && $this->workflow != 'learner-approval') {
-            return '';
+            return new MarkUp('', MarkUp::NO_VISIBLE_CONTENT);
         }
 
         /** check if variable exists in viewData and set state as editable if it does and is true */
@@ -374,10 +374,10 @@ class Column
 
             $output .= '</div>';
         } else {
-            return $this->markupField($formBuilder);
+            return new MarkUp($this->markupField($formBuilder), MarkUp::NO_VISIBLE_CONTENT);
         }
 
-        return $output;
+        return new MarkUp($output);
     }
 
 

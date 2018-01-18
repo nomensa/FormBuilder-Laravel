@@ -47,12 +47,18 @@ class Row
     public function markup(FormBuilder $formBuilder)
     {
         $html = '';
-        $colMarkup = '';
+        $colsMarkup = '';
+        $rowHasVisibleContent = false;
 
         if(isSet($this->columns)){
             $colCount = count($this->columns);
             foreach ($this->columns as $column) {
-                $colMarkup .= $column->markup($formBuilder,$colCount);
+                $colMarkup = $column->markup($formBuilder,$colCount);
+                $colsMarkup .= $colMarkup->html;
+
+                if ($colMarkup->hasVisibleContent) {
+                    $rowHasVisibleContent = true;
+                }
             }
         }
 
@@ -70,9 +76,12 @@ class Row
             $html .= MarkerUpper::wrapInTag($this->row_description, 'p');
         }
 
-        if ($colMarkup) {
-            $html .= $this->wrapInRowTags($colMarkup);
+        if ($rowHasVisibleContent) {
+            $html .= $this->wrapInRowTags($colsMarkup);
+        } else {
+            $html .= $colsMarkup;
         }
+
         if ($this->notes) {
             $html .= $this->wrapInRowTags($this->notes);
         }
