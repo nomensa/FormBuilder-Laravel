@@ -82,7 +82,7 @@ class Column
         $this->row_name = $column_schema['row_name'];
         $this->errors = $column_schema['errors'] ?? null;
 
-        $this->fieldName = config('constants.rowPrefix') . '.' . $this->row_name . '.' . $this->field;
+        $this->fieldName = trim(FormBuilder::getRowPrefix() . '.' . $this->row_name . '.' . $this->field, '.');
         $this->fieldNameWithBrackets = MarkerUpper::htmlNameAttribute($this->fieldName);
 
         // Underscore version

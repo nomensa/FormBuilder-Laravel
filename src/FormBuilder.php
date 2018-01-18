@@ -67,8 +67,6 @@ class FormBuilder
 
 
     /**
-     * TODO Unit test this
-     *
      * @param $fieldName
      * @param string $needle Rule keyword to look for eg 'nullable'
      *
@@ -76,9 +74,17 @@ class FormBuilder
      */
     public function ruleExists($fieldName, $needle)
     {
-        $rule = $this->getRule($fieldName);
+        $ruleChain = $this->getRule($fieldName);
 
-        return strpos($rule, $needle) !== false;
+        $rules = explode('|',$ruleChain);
+
+        foreach ($rules as $rule) {
+            if (explode(':', $rule)[0] == $needle) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
@@ -182,6 +188,17 @@ class FormBuilder
     public function getInlineFieldError($fieldName)
     {
         return MarkerUpper::inlineFieldError($this->errors, $fieldName);
+    }
+
+    /**
+     * Returns either the default blank string or a prefix set in user's config
+     */
+    public static function getRowPrefix()
+    {
+        if (!class_exists('config')) {
+            return '';
+        }
+        return config('formBuilder.rowPrefix') ?? '';
     }
 
 }
