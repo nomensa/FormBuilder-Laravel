@@ -124,7 +124,19 @@ Now add a link to create this type of form somewhere in your application's blade
 ```
 
 Congratulations! You should now have a working form that can be submitted and saved in database.
- 
+
+
+## Contributors
+
+When Composer pulls this repo into your project's `/vendor` folder it does not bring the `.git` folder required for contributing. Lucky for you, your friendly local developer has made a bash script to grab it for you! 
+
+Run the following to make the `vendor/nomensa/form-builder` a fully fledged Git repo: 
+
+```bash
+$ bash getgit
+```
+
+
 ## Dependencies
  
 FormBuilder depends upon Laravel Collective's HTML and FORM packages.

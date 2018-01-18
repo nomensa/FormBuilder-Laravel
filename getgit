@@ -1,0 +1,7 @@
+#!/bin/bash
+
+git clone git@github.com:nomensa/FormBuilder-Laravel.git temp_git_repo
+
+mv temp_git_repo/.git .git
+
+rm -rf temp_git_repo
