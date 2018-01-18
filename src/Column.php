@@ -249,7 +249,7 @@ class Column
     /**
      * @param FormBuilder/FormBuilder $form
      *
-     * @return Nomensa\FormBuilder\MarkUp
+     * @return \Nomensa\FormBuilder\MarkUp
      */
     public function markup(FormBuilder $formBuilder, $totalCols)
     {
@@ -382,7 +382,7 @@ class Column
 
 
     /**
-     * @param Nomensa\FormBuilder\FormBuilder $formBuilder
+     * @param \Nomensa\FormBuilder\FormBuilder $formBuilder
      *
      * @return string Defaults to 'editable'
      */

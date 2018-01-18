@@ -40,7 +40,7 @@ class Row
 
 
     /**
-     * @param FormBuilder/FormBuilder $form
+     * @param \Nomensa\FormBuilder\FormBuilder $form
      *
      * @return string
      */
