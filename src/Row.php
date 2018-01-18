@@ -10,7 +10,7 @@ class Row
     /** @var string */
     protected $title;
     protected $intro;
-    protected $row_description;
+    protected $description;
     protected $notes;
     protected $component;
     protected $errors;
@@ -22,7 +22,7 @@ class Row
     {
         $this->title = $row_schema['title'] ?? '';
         $this->intro = $row_schema['intro'] ?? '';
-        $this->row_description = $row_schema['row_description'] ?? '';
+        $this->description = $row_schema['description'] ?? '';
         $this->notes = $row_schema['notes'] ?? '';
         $this->columns = $row_schema['columns'] ?? null;
 
@@ -66,8 +66,8 @@ class Row
             $html .= MarkerUpper::wrapInTag($this->intro, 'p');
         }
 
-        if ($this->row_description) {
-            $html .= MarkerUpper::wrapInTag($this->row_description, 'p');
+        if ($this->description) {
+            $html .= MarkerUpper::wrapInTag($this->description, 'p');
         }
 
         if ($colMarkup) {
