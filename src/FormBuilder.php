@@ -32,6 +32,7 @@ class FormBuilder
     /** @var Any class that implements CSSClassProvider  */
     public $cssClassProvider;
 
+    /** @var EntryFormSubmission */
     public $entryFormSubmission;
 
     /** @var MessageBag */
@@ -41,29 +42,15 @@ class FormBuilder
     public $render;
 
 
-    public function __construct(array $form_schema, $options, EntryFormInstance $formInstance, $state_id, array $viewData, User $owner, MessageBag $errors, EntryFormSubmission $entryFormSubmission = null)
+    public function __construct(array $form_schema, $options)
     {
-
         $this->components = $form_schema;
 
         foreach ($this->components as &$component) {
-
             $component = new Component($component);
         }
 
         $this->ruleGroups = (array)$options->rules;
-
-        $this->formInstance = $formInstance;
-
-        $this->state_id = $state_id;
-
-        $this->viewData = $viewData;
-
-        $this->owner = $owner;
-
-        $this->entryFormSubmission = $entryFormSubmission;
-
-        $this->errors = $errors;
     }
 
     /**
