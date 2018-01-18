@@ -56,8 +56,8 @@ Add aliases to `config/app.php` file:
 ```php
 'aliases' => [
     ...
-    'FormBuilder' => App\Helpers\FormBuilder\FormBuilder::class,
-    'CSSClassFactory' => App\Helpers\FormBuilder\BootstrapCSSClassFactory::class,
+    'FormBuilder' => Nomensa\FormBuilder\FormBuilder::class,
+    'CSSClassFactory' => Nomensa\FormBuilder\BootstrapCSSClassFactory::class,
 ],
 ```
 
