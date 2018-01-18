@@ -8,7 +8,7 @@ class Row
 {
 
     /** @var string */
-    protected $block_title;
+    protected $title;
     protected $row_intro;
     protected $row_description;
     protected $notes;
@@ -20,7 +20,7 @@ class Row
 
     public function __construct(array $row_schema)
     {
-        $this->block_title = $row_schema['block_title'] ?? '';
+        $this->title = $row_schema['title'] ?? '';
         $this->row_intro = $row_schema['row_intro'] ?? '';
         $this->row_description = $row_schema['row_description'] ?? '';
         $this->notes = $row_schema['notes'] ?? '';
@@ -58,8 +58,8 @@ class Row
 
         /* markup column */
 
-        if ($this->block_title) {
-            $html .= MarkerUpper::wrapInTag($this->block_title, 'h2', ['class' => 'heading']);
+        if ($this->title) {
+            $html .= MarkerUpper::wrapInTag($this->title, 'h2', ['class' => 'heading']);
         }
 
         if ($this->row_intro) {

@@ -99,7 +99,7 @@ Now open `/app/FormBuilder/Forms/MY-FORM/schema.json` in your editor and paste i
         ]
       },
       {
-        "block_title": "Time",
+        "title": "Time",
         "columns": [
           {
             "field": "first-form-love-kittens",
