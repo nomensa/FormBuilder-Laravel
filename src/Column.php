@@ -189,7 +189,7 @@ class Column
                 $output .= '<div class="' . $this->classBundle . '">';
                 $output .= '<section class="section-readonly">';
                 $output .= MarkerUpper::wrapInTag($this->label, "h4");
-                $output .= $formattedDate;
+                $output .= MarkerUpper::wrapInTag($formattedDate,'p');
                 $output .= '</section>';
                 $output .= '</div>';
                 $output .= Field::hidden($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
@@ -207,7 +207,7 @@ class Column
                     }
 
                     $output .= MarkerUpper::wrapInTag($this->label, "h4");
-                    $output .= $this->options[$this->value];
+                    $output .= MarkerUpper::wrapInTag($this->options[$this->value],'p');
                     $output .= '</section>';
                     $output .= '</div>';
                 }
@@ -221,10 +221,11 @@ class Column
                     $output .= '<div class="' . $this->classBundle . '">';
                     $output .= '<section class="section-readonly">';
                     $output .= MarkerUpper::wrapInTag($this->label, "h4");
-                    $output .= $this->value ;
+                    $output .= MarkerUpper::wrapInTag($this->value,'p');
                     $output .= '</section>';
-                    $output .= '</div>';
                     $output .= Field::hidden($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
+                    $output .= '</div>';
+
                 }
                 break;
 
@@ -374,6 +375,10 @@ class Column
             }
 
             $output .= '</div>';
+        } elseif(substr($this->type, -9) == '-readonly'){
+
+            return new MarkUp($this->markupField($formBuilder));
+
         } else {
             return new MarkUp($this->markupField($formBuilder), MarkUp::NO_VISIBLE_CONTENT);
         }
