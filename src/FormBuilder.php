@@ -17,11 +17,14 @@ class FormBuilder
     /** @var Group of rules for how fields are displayed */
     public $ruleGroups;
 
-    /** @var App\EntryFormInstance  */
+    /** @var App\EntryFormInstance $formInstance  */
     public $formInstance;
 
     /**  A key in the 'access' array in the schema that describes how a field is rendered */
     public $state_id;
+
+    /** Whether to override field display rules from access state  */
+    public $displayMode;
 
     /** @var array - Any additional variables that need to be made available */
     public $viewData;

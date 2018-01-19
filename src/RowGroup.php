@@ -13,7 +13,7 @@ class RowGroup
     /**
      * RowGroup constructor.
      *
-     * @param array $rowGroup_schema
+     * @param array $rows
      * @param $name
      */
     public function __construct(array $rows, $name)

@@ -9,7 +9,7 @@ class Component
     /** @var */
     public $type;
 
-    /** @var Instance of Nomensa\FormBuilder\RowGroup */
+    /** @var Instance of \Nomensa\FormBuilder\RowGroup */
     public $rowGroup;
 
     /** @var string Optional name */
@@ -29,18 +29,12 @@ class Component
     }
 
     /**
-     * @param Nomensa\FormBuilder\FormBuilder $form - The containing form
+     * @param \Nomensa\FormBuilder\FormBuilder $formBuilder - The containing form
      *
      * @return string
      */
     public function markup(FormBuilder $formBuilder)
     {
-
-        $filter = isset($row->filter) ? $row->filter : null;
-        $element_label = isset($row->element_label) ? $row->element_label : null;
-        $saved = isset($saved) ? $saved : null;
-        $myRole = isset($myRole) ? $myRole : null;
-
 
         if ($this->type == "dynamic") {
             return $this->rowGroup->markup($formBuilder);

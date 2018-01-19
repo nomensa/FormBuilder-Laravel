@@ -42,7 +42,7 @@ class Column
     /** @var array of display states */
     public $states;
 
-    public $displayPermission;
+    public $displayMode;
 
 
     /** @var array */
@@ -73,7 +73,7 @@ class Column
 
         $this->prefix = $column_schema['prefix'] ?? null;
 
-        $this->displayPermission = $column_schema['displayPermission'] ?? null;
+        $this->displayMode = $column_schema['displayMode'] ?? null;
         $this->parentTitle = $column_schema['parentTitle'] ?? null;
         $this->classes = $column_schema['classes'] ?? null;
         $this->disabled = $column_schema['disabled'] ?? null;
@@ -262,13 +262,14 @@ class Column
         $this->selected = isset($this->selected) ? $this->selected : null;
         $this->saved = isset($this->saved) ? $this->saved : null;
         $this->label = $this->label ?? null;
+        $this->displayMode = $formBuilder->displayMode;
+
 
         $this->value = $formBuilder->getFieldValue($this->row_name, $this->field);
 
         if($this->value && !empty($this->helptextIfPreviouslySaved)) {
             $this->helptext = $this->helptextIfPreviouslySaved;
         }
-
 
         $output = '';
 
@@ -302,7 +303,7 @@ class Column
 
         if ($state == 'readonly_for_owner' && $formBuilder->owner->id == Auth::user()->id ||
             $state == 'editable_for_owner' && $formBuilder->owner->id != Auth::user()->id ||
-            $state != 'hidden' && $this->displayPermission == 'readonly' ||
+            $state != 'hidden' && $this->displayMode == 'readonly' ||
             $state == 'readonly')
         {
             $state = 'readonly';
