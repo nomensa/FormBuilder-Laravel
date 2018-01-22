@@ -14,7 +14,7 @@ use CSSClassFactory;
 
 class Column
 {
-    const MULTI_OPTION_TYPES = ['checkboxes', 'select', 'radios'];
+    const MULTI_OPTION_TYPES = ['checkboxes', 'radios'];
 
     const WITH_LABEL = true;
 
@@ -151,6 +151,13 @@ class Column
                 break;
 
             case "select":
+
+                $attributes = $this->asFormArray();
+                $attributes['class'] = 'form-control';
+
+                return Form::select($this->fieldNameWithBrackets, $this->options, $this->value, $attributes);
+                break;
+
             case "radios":
 
                 return Form::{$this->type}($this->fieldNameWithBrackets, $this->options, $this->value, $this->asFormArray());
