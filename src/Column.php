@@ -147,6 +147,17 @@ class Column
                 return Field::checkbox($this->fieldNameWithBrackets, $this->options, $this->value, $this->asFormArray(Column::WITH_LABEL));
                 break;
 
+            case "checkboxes":
+
+                $attributes = $this->asFormArray(Column::WITH_LABEL);
+                unset($attributes['id']);
+                foreach ($this->options as $option) {
+                    $attributes['label'] = $option;
+                    $output .= Field::checkbox($this->fieldNameWithBrackets . '[]', $option, $this->value, $attributes);
+                }
+                return $output;
+                break;
+
             case "select":
 
                 $attributes = $this->asFormArray();
