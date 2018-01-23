@@ -48,10 +48,7 @@ class Column
     /** @var array */
     public $classes;
 
-    /** @var Instance */
-    public $cssClassProvider;
-
-    /** @var Instance of ClassBundle */
+    /** @var \Nomensa\FormBuilder\ClassBundle */
     public $classBundle;
 
     /** @var array Values in a select box */
@@ -153,7 +150,7 @@ class Column
             case "select":
 
                 $attributes = $this->asFormArray();
-                $attributes['class'] = 'form-control';
+                $attributes['class'] = CSSClassFactory::selectClassBundle();
 
                 return Form::select($this->fieldNameWithBrackets, $this->options, $this->value, $attributes);
                 break;
@@ -261,7 +258,6 @@ class Column
      */
     public function markup(FormBuilder $formBuilder, $totalCols)
     {
-        // TODO Make the CSSClassProvider a proper provider so developers can implement whatever
         $this->classBundle = CSSClassFactory::colClassBundle($totalCols);
         $this->classBundle->add($this->classes);
 

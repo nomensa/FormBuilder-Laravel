@@ -5,6 +5,9 @@ namespace Nomensa\FormBuilder;
 class BootstrapCSSClassFactory implements CSSClassFactoryInterface
 {
 
+    /**
+     * @return \Nomensa\FormBuilder\ClassBundle
+     */
     public static function rowClassBundle()
     {
         return new ClassBundle('row');
@@ -17,7 +20,7 @@ class BootstrapCSSClassFactory implements CSSClassFactoryInterface
      *
      * TODO Review for small-screen layout
      *
-     * @return Nomensa\FormBuilder\ClassBundle
+     * @return \Nomensa\FormBuilder\ClassBundle
      */
     public static function colClassBundle($colCount = 1)
     {
@@ -30,6 +33,14 @@ class BootstrapCSSClassFactory implements CSSClassFactoryInterface
             'col-sm-' . $smColWidth,
             'col-md-' . $mdColWidth,
         ]);
+    }
+
+    /**
+     * @return \Nomensa\FormBuilder\ClassBundle
+     */
+    public static function selectClassBundle()
+    {
+        return new ClassBundle('form-control');
     }
 
 }
