@@ -6,33 +6,41 @@ use CSSClassFactory;
 
 class Row
 {
+    /** @var bool */
+    public $cloneable = false;
 
     /** @var string */
     protected $title;
     protected $intro;
     protected $description;
     protected $notes;
-    protected $component;
-    protected $errors;
 
     /** @var array - A row contains many columns */
     protected $columns = [];
 
-    public function __construct(array $row_schema)
+    /**
+     * Row constructor.
+     *
+     * @param array $row_schema Defines a single row of a RowGroup. Can contain 'title', 'intro', 'description', 'notes'
+     * @param bool $cloneable
+     */
+    public function __construct(array $row_schema, bool $cloneable = false)
     {
+        $this->cloneable = $cloneable;
+
         $this->title = $row_schema['title'] ?? '';
         $this->intro = $row_schema['intro'] ?? '';
         $this->description = $row_schema['description'] ?? '';
         $this->notes = $row_schema['notes'] ?? '';
         $this->columns = $row_schema['columns'] ?? null;
 
-        if(isSet($this->columns)){
+        if (isSet($this->columns)) {
 
             foreach ($this->columns as &$column) {
 
                 $column['row_name'] = $row_schema['row_name'];
 
-                $column = new Column($column);
+                $column = new Column($column,$this->cloneable);
 
             }
         }

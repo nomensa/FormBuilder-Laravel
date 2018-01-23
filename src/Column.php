@@ -25,6 +25,10 @@ class Column
     public $fieldName;
     public $id;
     public $value;
+
+    /** @var bool */
+    public $cloneable = false;
+
     public $row_name;
     public $parentTitle;
     public $disabled;
@@ -57,7 +61,13 @@ class Column
     /** @var array of HTML data attributes keyed by name (without "data-" prefix) */
     public $dataAttributes = [];
 
-    public function __construct(array $column_schema)
+    /**
+     * Column constructor.
+     *
+     * @param array $column_schema
+     * @param bool $cloneable
+     */
+    public function __construct(array $column_schema, bool $cloneable)
     {
         $this->field = $column_schema['field'];
         $this->label = $column_schema['label'];
@@ -67,6 +77,7 @@ class Column
         $this->states = $column_schema['states'] ?? [];
         $this->value = '';
 
+        $this->cloneable = $cloneable;
 
         $this->prefix = $column_schema['prefix'] ?? null;
 
@@ -79,7 +90,14 @@ class Column
         $this->row_name = $column_schema['row_name'];
         $this->errors = $column_schema['errors'] ?? null;
 
-        $this->fieldName = trim(FormBuilder::getRowPrefix() . '.' . $this->row_name . '.' . $this->field, '.');
+        // Construct field name
+        $fieldName = FormBuilder::getRowPrefix() . '.' . $this->row_name;
+        if ($this->cloneable) {
+            $fieldName .= '.0'; // TODO Make this increment
+        }
+        $fieldName .= '.' . $this->field;
+
+        $this->fieldName = trim($fieldName, '.');
         $this->fieldNameWithBrackets = MarkerUpper::htmlNameAttribute($this->fieldName);
 
         // Underscore version
