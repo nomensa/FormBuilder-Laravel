@@ -10,6 +10,7 @@ use Illuminate\Support\MessageBag;
 class FormBuilder
 {
     use MarkerUpper;
+    use FieldMapping;
 
     /** @var array of Instances of FormBuilder\Component */
     public $components = [];
@@ -54,6 +55,7 @@ class FormBuilder
         }
 
         $this->ruleGroups = (array)$options->rules;
+
     }
 
     /**
@@ -190,7 +192,8 @@ class FormBuilder
 
     public function getInlineFieldError($fieldName)
     {
-        return MarkerUpper::inlineFieldError($this->errors, $fieldName);
+
+        return MarkerUpper::inlineFieldError($this->errors, $fieldName,$this->fieldMap);
     }
 
     /**
@@ -203,5 +206,4 @@ class FormBuilder
         }
         return config('formBuilder.rowPrefix') ?? '';
     }
-
 }
