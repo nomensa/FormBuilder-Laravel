@@ -22,6 +22,9 @@ class Column
     public $field = '';
     public $label = '';
     public $type = "text";
+
+    private $default_value;
+
     public $fieldName;
     public $id;
     public $value;
@@ -72,6 +75,9 @@ class Column
         $this->field = $column_schema['field'];
         $this->label = $column_schema['label'];
         $this->type = $column_schema['type'];
+
+        $this->default_value = $column_schema['default_value'] ?? null;
+
         $this->toolbar = $column_schema['toolbar'] ?? null;
         $this->attributes = $column_schema['attributes'] ?? [];
         $this->states = $column_schema['states'] ?? [];
@@ -199,6 +205,10 @@ class Column
 
                 $this->dataAttributes['mindate'] = $formBuilder->ruleExists($this->fieldName, 'date_is_in_the_past') ? '-5y' : 0;
                 $this->dataAttributes['maxdate'] = $formBuilder->ruleExists($this->fieldName, 'date_is_in_the_future') ? '+5y' : 0;
+
+                if ($this->value === null) {
+                    $this->value = $this->parseDefaultValue();
+                }
 
                 // We create date as a text field (NOT date!) because we replace it with a data picker and don't want Chrome to be "helpful"
                 return Field::text($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
@@ -432,6 +442,19 @@ class Column
             return $this->states[$key];
         }
         return 'editable';
+    }
+
+    /**
+     * Returns the default value or a dynamically generated default if default is a keyword like "TODAY"
+     *
+     * @return null|string
+     */
+    private function parseDefaultValue()
+    {
+        if ($this->default_value === 'TODAY') {
+            return Carbon::now()->format('d-m-Y');
+        }
+        return $this->default_value;
     }
 
 }
