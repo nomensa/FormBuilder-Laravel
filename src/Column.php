@@ -168,9 +168,10 @@ class Column
             case "checkboxes":
 
                 $attributes = $this->asFormArray(Column::WITH_LABEL);
-                unset($attributes['id']);
-                foreach ($this->options as $option) {
+                $origID = $attributes['id'];
+                foreach ($this->options as $key => $option) {
                     $attributes['label'] = $option;
+                    $attributes['id'] = $origID . '_' . $key;
                     $output .= Field::checkbox($this->fieldNameWithBrackets . '[]', $option, $this->value, $attributes);
                 }
                 return $output;
