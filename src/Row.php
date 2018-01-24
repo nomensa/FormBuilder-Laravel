@@ -16,7 +16,7 @@ class Row
     protected $notes;
 
     /** @var array - A row contains many columns */
-    protected $columns = [];
+    public $columns = [];
 
     /**
      * Row constructor.

@@ -77,13 +77,13 @@ trait MarkerUpper
     /**
      * @param $errors
      * @param string $errorMessageHeader
+     * @param array $fieldMap
      *
      * @return string
      */
-    public static function formatErrorMessages($errors, $errorMessageHeader)
+    public static function formatErrorMessages($errors, $errorMessageHeader,$fieldMap)
     {
         $defaultErrorMessage = config('constants.errors.default');
-        $fields = Session::get('fields');
 
         $output = '<section id="sectionPageErrors">';
         $output .= !empty($errorMessageHeader) ? "<h2>" . $errorMessageHeader . "</h2>" : "<h2>" . $defaultErrorMessage . "</h2>";
@@ -95,20 +95,19 @@ trait MarkerUpper
             foreach($errorMessages as $error) {
                 $error = strip_tags($error);
 
-                $error = str_replace('.', '_', $error);
+                if (is_array($fieldMap)) {
 
-                if (is_array($fields)) {
-
-                    foreach ($fields as $fieldName => $value) {
+                    foreach ($fieldMap as $fieldName => $value) {
                         $pos = strpos($error, $fieldName);
                         if ($pos !== false) {
                             $error = substr_replace($error, $value, $pos, strlen($fieldName));
                         };
                     }
 
-                    $error = str_replace('_', '.', $error);
                     $error = str_replace('The', '', $error);
                     $error = str_replace('An ', '', $error);
+                    $error = str_replace('Assessor', '<strong>Assessor</strong>', $error);
+                    $error = str_replace('Unit', '<strong>Unit</strong>', $error);
                 }
 
                 $output .= "<p  class=\"flash alert-danger\"><a href=\"#" . $errorAnchorName . "\">" . $error . "</a></p>";
@@ -125,28 +124,17 @@ trait MarkerUpper
     /**
      * @param Illuminate\Support\MessageBag or Illuminate\Support\ViewErrorBag $errors
      * @param $fieldName
+     * @param array $fieldMap
      *
      * @return string
      */
-    public static function inlineFieldError($errors, $fieldName)
+    public static function inlineFieldError($errors, $fieldName, $fieldMap)
     {
         if (count($errors) == 0) {
             return false;
         }
 
         $output = '';
-        $fieldKeys =[];
-        $fields = Session::get('fields');
-
-        if (!empty($fields)) {
-            $fieldKeys = array_keys($fields);
-            $fieldValues = array_values($fields);
-
-            foreach ($fieldKeys as $index => $fieldKey) {
-                $fieldKeys[$index] = MarkerUpper::HTMLStringDotify($fieldKey);
-            }
-        }
-
 
         foreach ($errors->get($fieldName) as $errorMessage) {
 
@@ -158,12 +146,10 @@ trait MarkerUpper
             $errorMessage = str_replace('An field', 'An', $errorMessage);
             $errorMessage = str_replace('The', 'This', $errorMessage);
 
-            if (!empty($fields) and isset($fieldKeys) and isset($fieldValues)) {
-                $errorMessage = str_replace('is 1', 'is Yes', $errorMessage);
-                $errorMessage = str_replace('is 2', 'is No', $errorMessage);
-            }
+            $errorMessage = str_replace('is 1', 'is Yes', $errorMessage);
+            $errorMessage = str_replace('is 2', 'is No', $errorMessage);
 
-            $errorMessage = str_replace($fieldKeys, $fieldValues, $errorMessage);
+            $errorMessage = str_replace(array_keys($fieldMap), array_values($fieldMap), $errorMessage);
 
             $output = '<div data-alert class="alert-box alert">';
             $output .= "<span>" . __($errorMessage) . "</span>";
