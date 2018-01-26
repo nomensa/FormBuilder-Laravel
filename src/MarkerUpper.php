@@ -178,26 +178,33 @@ trait MarkerUpper
         $js = PHP_EOL;
         $indentation = '            ';
 
-        foreach ($fields as $field => $validationRules) {
-
-            if ($validationRules != 'nullable') {
-
-                if (strstr($validationRules, 'required_if') == true) {
-
-                    $toggledFieldID = $this->HTMLIDFriendly($field);
-
-                    // The thing after the comma is the value
-                    $parts = explode(",", $validationRules);
+        foreach ($fields as $field => $validationRuleString) {
 
 
-                    list($ruleName,$valueFieldID) = explode(':',$parts[0]);
-                    $valueFieldID = $this->HTMLIDFriendly($valueFieldID);
-                    // Pop off the first item
-                    array_shift($parts);
-                    $showOnValues = implode(',', $parts);
+            $validationRules = explode('|',$validationRuleString);
 
-                    $js .= $indentation . "showHideTextArea('#" . $toggledFieldID . "','#" . $valueFieldID . "', '" . $showOnValues . "');" . PHP_EOL;
+            foreach ($validationRules as $validationRule) {
 
+                if ($validationRule != 'nullable') {
+
+                    if (strstr($validationRule, 'required_if') == true) {
+
+                        $toggledFieldID = $this->HTMLIDFriendly($field);
+
+                        // The thing after the comma is the value
+                        $parts = explode(",", $validationRule);
+
+
+                        list($ruleName, $valueFieldID) = explode(':',
+                          $parts[0]);
+                        $valueFieldID = $this->HTMLIDFriendly($valueFieldID);
+                        // Pop off the first item
+                        array_shift($parts);
+                        $showOnValues = implode(',', $parts);
+
+                        $js .= $indentation . "showHideTextArea('#" . $toggledFieldID . "','#" . $valueFieldID . "', '" . $showOnValues . "');" . PHP_EOL;
+
+                    }
                 }
             }
         }
