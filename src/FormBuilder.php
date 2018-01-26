@@ -163,18 +163,20 @@ class FormBuilder
 
 
     /**
+     * @param string $row_name
+     * @param string $field_name
      *
-     * @param string $key
+     * @return string $row->value
      */
-    public function getFieldValue($row_id, $field_type_name)
+    public function getFieldValue($row_name, $field_name)
     {
 
         if (!$this->hasSubmission()) {
             return null;
         }
-        $submissionRows = $this->entryFormSubmission->entryFormSubmissionRows;
+        $submissionRows = $this->entryFormSubmission->formSubmissionFields;
 
-        $row = $submissionRows->where('rid', $row_id)->where('field_type_name', $field_type_name)->first();
+        $row = $submissionRows->where('row_name', $row_name)->where('field_name', $field_name)->first();
         if (empty($row)) {
             return null;
         }
