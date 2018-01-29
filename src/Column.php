@@ -35,7 +35,6 @@ class Column
     public $row_name;
     public $parentTitle;
     public $disabled;
-    public $workflow;
     public $helptext;
     public $helptextIfPreviouslySaved;
     public $prefix;
@@ -327,7 +326,7 @@ class Column
         $state = $this->getState($formBuilder);
 
         // if access for your state determines content is hidden then don't render the field
-        if ($state == 'hidden-for-learner' && $this->workflow != 'learner-approval') {
+        if ($state == 'hidden-for-learner' && $formBuilder->formInstance->workflow->name != 'learner-approval') {
             return new MarkUp('', MarkUp::NO_VISIBLE_CONTENT);
         }
 
