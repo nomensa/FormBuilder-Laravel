@@ -187,10 +187,18 @@ class Column
                 $attributes = $this->asFormArray();
                 $attributes['class'] = CSSClassFactory::selectClassBundle();
 
+                if ($this->value === null) {
+                    $this->value = $this->parseDefaultValue();
+                }
+
                 return Form::select($this->fieldNameWithBrackets, $this->options, $this->value, $attributes);
                 break;
 
             case "radios":
+
+                if ($this->value === null) {
+                    $this->value = $this->parseDefaultValue();
+                }
 
                 return Form::{$this->type}($this->fieldNameWithBrackets, $this->options, $this->value, $this->asFormArray());
                 break;
