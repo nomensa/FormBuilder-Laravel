@@ -100,7 +100,7 @@ trait MarkerUpper
                     foreach ($fieldMap as $fieldName => $value) {
                         $pos = strpos($error, $fieldName);
                         if ($pos !== false) {
-                            $error = substr_replace($error, $value, $pos, strlen($fieldName));
+                            $error = substr_replace($error, $value->label, $pos, strlen($fieldName));
                         };
                     }
 
@@ -149,7 +149,7 @@ trait MarkerUpper
             $errorMessage = str_replace('is 1', 'is Yes', $errorMessage);
             $errorMessage = str_replace('is 2', 'is No', $errorMessage);
 
-            $errorMessage = str_replace(array_keys($fieldMap), array_values($fieldMap), $errorMessage);
+            //$errorMessage = str_replace(array_keys($fieldMap), array_values($fieldMap), $errorMessage);
 
             $output = '<div data-alert class="alert-box alert">';
             $output .= "<span>" . __($errorMessage) . "</span>";

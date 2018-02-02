@@ -208,4 +208,18 @@ class FormBuilder
         }
         return config('formBuilder.rowPrefix') ?? '';
     }
+
+
+    /**
+     * Returns either the default blank string or a prefix set in user's config
+     */
+    public static function getMaxChars()
+    {
+        if (!class_exists('config')) {
+            return null;
+        }
+        return config('formBuilder.maxChars') ?? null;
+    }
+
+
 }

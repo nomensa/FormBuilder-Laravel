@@ -84,20 +84,53 @@ trait FieldMapping
     /**
      * Iterate through the column and return array of fields
      *
-     * @param $column
+     * @param $columns
      *
      * @return array
      */
-    private function extractFieldsFromColumn($column)
+    private function extractFieldsFromColumn($columns)
     {
-
         $fields = [];
 
-        foreach ($column as $field){
-            $fields[$field->fieldName] = '<strong>'.$field->label.'</strong>';
+        foreach ($columns as $column){
+            $fields[$column->fieldName] = $column;
         }
 
         return $fields;
-
     }
+
+    /**
+     * Returns the validation rules for this state
+     */
+    public function getStateRules()
+    {
+        $rules = [];
+        foreach ($this->getFieldMap() as $key => $field) {
+            if (!isSet($field->states[$this->state_id]) || $field->states[$this->state_id] == 'editable') {
+
+                $rules[$key] = 'required';
+                
+            }
+        }
+        return $rules;
+    }
+
+    /**
+     * Returns the validateable textareas for this state
+     */
+    public function getEditableTextAreas()
+    {
+        $textareas = [];
+        foreach ($this->getFieldMap() as $key => $field) {
+            if ((!isSet($field->states[$this->state_id]) || $field->states[$this->state_id] == 'editable') && $field->type =='textarea') {
+
+                $textareas[] = $key;
+
+            }
+        }
+        return $textareas;
+    }
+
+
+
 }
