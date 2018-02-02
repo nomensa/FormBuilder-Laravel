@@ -248,6 +248,7 @@ class Column
                 break;
 
             case "radios-readonly":  /* Render text into the form and add a hidden field */
+            case "select-readonly":  /* Render text into the form and add a hidden field */
 
                 if (!empty($this->value)) {
                     $output .= '<div class="' . $this->classBundle . '">';
@@ -261,6 +262,7 @@ class Column
                     $output .= MarkerUpper::wrapInTag($this->options[$this->value],'p');
                     $output .= '</section>';
                     $output .= '</div>';
+                    $output .= Field::hidden($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
                 }
                 break;
 
