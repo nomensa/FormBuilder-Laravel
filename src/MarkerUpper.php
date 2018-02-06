@@ -180,7 +180,6 @@ trait MarkerUpper
 
         foreach ($fields as $field => $validationRuleString) {
 
-
             $validationRules = explode('|',$validationRuleString);
 
             foreach ($validationRules as $validationRule) {
@@ -202,7 +201,7 @@ trait MarkerUpper
                         array_shift($parts);
                         $showOnValues = implode(',', $parts);
 
-                        $js .= $indentation . "showHideTextArea('#" . $toggledFieldID . "','#" . $valueFieldID . "', '" . $showOnValues . "');" . PHP_EOL;
+                        $js .= $indentation . "showHideField('#" . $toggledFieldID . "','#" . $valueFieldID . "', '" . $showOnValues . "');" . PHP_EOL;
 
                     }
                 }

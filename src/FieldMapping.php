@@ -59,19 +59,23 @@ trait FieldMapping
     /**
      * Get Rows with Columns and extract their fields
      *
-     * @param $rowGroup
+     * @param \Nomensa\FormBuilder\RowGroup $rowGroup
      *
      * @return array
      */
-    private function getRowsWithColumns($rowGroup)
+    private function getRowsWithColumns(RowGroup $rowGroup) : array
     {
-
         $rowsWithColumns = [];
 
-        foreach ($rowGroup->rows as $row){
+        foreach ($rowGroup->rows as $row) {
 
             if(isset($row->columns)){
                 $thisRowsWithColumns = $this->extractFieldsFromColumn($row->columns);
+
+                $rowsWithColumns = array_merge($rowsWithColumns, $thisRowsWithColumns);
+            } else if ($row->cloneable) {
+                // This is not a row, but a cloneable rowGroup Recursion FTW
+                $thisRowsWithColumns = $this->getRowsWithColumns($row);
 
                 $rowsWithColumns = array_merge($rowsWithColumns, $thisRowsWithColumns);
             }
@@ -105,11 +109,13 @@ trait FieldMapping
     public function getStateRules()
     {
         $rules = [];
-        foreach ($this->getFieldMap() as $key => $field) {
-            if (!isSet($field->states[$this->state_id]) || $field->states[$this->state_id] == 'editable') {
 
+        foreach ($this->getFieldMap() as $key => $field) {
+            if ($field->cloneable) {
+                // Don't assume required for cloneable fields, developer should implement their own rules
+
+            } else if (!isSet($field->states[$this->state_id]) || $field->states[$this->state_id] == 'editable') {
                 $rules[$key] = 'required';
-                
             }
         }
         return $rules;
@@ -130,7 +136,6 @@ trait FieldMapping
         }
         return $textareas;
     }
-
 
 
 }
