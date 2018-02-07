@@ -11,28 +11,31 @@ Do the work
 
 ## Commit the work
 
-Have a look at what tags currently exist
+Commit your work on the master branch and push to origin.
+
+Have a look at what tags currently exist:
 
 ```bash
 $ git fetch
 $ git tag
 ```
 
-Tag the version
+Tag your new work with a new version number:
 
 ```
 git tag -a v0.6.0 -m "Added great new method"
 ```
 
-Push the tag to GitHub repo
+Push the tag to the GitHub repo:
 
 ```
 git push origin v0.6.0
 ```
 
-Change directory back up to the application and tell composer to use the new version
+Change directory back up to the application, SSH into your vagrant box and tell Composer to use the new version of the package:
 
 ```
-composer require nomensa/form-builder 0.6.0
+$ composer update nomensa/form-builder
+$ composer require nomensa/form-builder 0.6.0
 ```
 
