@@ -114,8 +114,38 @@ class Column
             // Do nothing
 
         } else if (is_array($column_schema['options'])) {
+            if (!$this->hasStringKeys($column_schema['options'])) {
+                $column_schema['options'] = $this->slugKeyArray($column_schema['options'], ($this->type == 'radios') );
+            }
             $this->options = $column_schema['options'];
         }
+    }
+
+    /**
+     * Temporary poly-fill until schemas only contain key-pair values
+     *
+     * @param array $array
+     * @return bool
+     */
+    function hasStringKeys(array $array) : bool
+    {
+        return count(array_filter(array_keys($array), 'is_string')) > 0;
+    }
+
+    function slugKeyArray(array $array, $stripFirst = false)
+    {
+        if ($stripFirst) {
+            array_shift($array);
+        }
+        $associativeArray = [];
+        foreach ($array as $item) {
+            if (strtolower($item) == 'please select') {
+                $associativeArray[""] = $item;
+            } else {
+                $associativeArray[str_slug($item)] = $item;
+            }
+        }
+        return $associativeArray;
     }
 
 
