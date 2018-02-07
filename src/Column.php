@@ -207,7 +207,7 @@ class Column
                 foreach ($this->options as $key => $option) {
                     $attributes['label'] = $option;
                     $attributes['id'] = $origID . '_' . $key;
-                    $output .= Field::checkbox($this->fieldNameWithBrackets . '[]', $option, $this->value, $attributes);
+                    $output .= Field::checkbox($this->fieldNameWithBrackets . '[]', $key, $this->value, $attributes);
                 }
                 return $output;
                 break;
