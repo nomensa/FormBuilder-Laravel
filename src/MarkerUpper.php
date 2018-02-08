@@ -134,22 +134,27 @@ trait MarkerUpper
             return false;
         }
 
+        $fields = parent::mapFieldsToLabels($fieldMap);
+
         $output = '';
 
         foreach ($errors->get($fieldName) as $errorMessage) {
 
             $pos = strpos($errorMessage, $fieldName);
+
             if ($pos !== false) {
                 $errorMessage = substr_replace($errorMessage, 'field', $pos, strlen($fieldName));
             }
 
-            $errorMessage = str_replace('An field', 'An', $errorMessage);
-            $errorMessage = str_replace('The', 'This', $errorMessage);
+            $errorMessage = str_replace('An field ', 'An ', $errorMessage);
+            $errorMessage = str_replace('The ', 'This ', $errorMessage);
 
             $errorMessage = str_replace('is 1', 'is Yes', $errorMessage);
             $errorMessage = str_replace('is 2', 'is No', $errorMessage);
 
-            //$errorMessage = str_replace(array_keys($fieldMap), array_values($fieldMap), $errorMessage);
+            // TODO check error messages work with individual values from radios / checkbox arrays
+
+            $errorMessage = str_replace(array_keys($fields), array_values($fields), $errorMessage);
 
             $output = '<div data-alert class="alert-box alert">';
             $output .= "<span>" . __($errorMessage) . "</span>";
@@ -158,6 +163,25 @@ trait MarkerUpper
 
         return $output;
     }
+
+
+    /**
+     * Make an Array of fieldnames with their labels
+     * @param $fieldMap
+     *
+     * @return array
+     */
+    private static function mapFieldsToLabels($fieldMap){
+
+        $fields = [];
+
+        foreach ($fieldMap as $key => $value){
+            $fields[$key] = '<strong>' . $value->label . '</strong>';
+        };
+
+        return $fields;
+    }
+
 
 
     /**
