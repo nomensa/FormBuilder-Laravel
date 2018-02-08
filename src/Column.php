@@ -291,7 +291,6 @@ class Column
                 break;
 
             case "radios-readonly":  /* Render text into the form and add a hidden field */
-            case "number-readonly":
             case "select-readonly":  /* Render text into the form and add a hidden field */
 
                 if (!empty($this->value)) {
@@ -311,7 +310,7 @@ class Column
                 break;
 
             case "text-readonly":  /* Render text into the form and add a hidden field */
-
+            case "number-readonly":
             case "textarea-readonly":  /* Render text into the form and add a hidden field */
 
                 if (!empty($this->value)) {
