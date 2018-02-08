@@ -280,13 +280,19 @@ class Column
 
             case "date-readonly":  /* Render text into the form and add a hidden field */
 
-                $output .= '<div class="' . $this->classBundle . '">';
-                $output .= '<section class="section-readonly">';
-                $output .= MarkerUpper::wrapInTag($this->label, "h4");
-                $output .= MarkerUpper::wrapInTag($this->value->format('j F Y'),'p');
-                $output .= '</section>';
-                $output .= '</div>';
-                $output .= Field::hidden($this->fieldNameWithBrackets, $this->value->format('Y-m-d'), $this->asFormArray());
+
+                if(!empty($this->value)) {
+
+
+                    $output .= '<div class="' . $this->classBundle . '">';
+                    $output .= '<section class="section-readonly">';
+                    $output .= MarkerUpper::wrapInTag($this->label, "h4");
+                    $output .= MarkerUpper::wrapInTag($this->value->format('j F Y'), 'p');
+                    $output .= '</section>';
+                    $output .= '</div>';
+                    $output .= Field::hidden($this->fieldNameWithBrackets,
+                      $this->value->format('Y-m-d'), $this->asFormArray());
+                }
 
                 break;
 

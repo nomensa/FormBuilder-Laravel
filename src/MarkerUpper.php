@@ -166,17 +166,21 @@ trait MarkerUpper
 
 
     /**
-     * Make an Array of fieldnames with their labels
+     * Make an Array of field names with their labels
      * @param $fieldMap
      *
      * @return array
      */
-    private static function mapFieldsToLabels($fieldMap){
+        public static function mapFieldsToLabels($fieldMap){
 
         $fields = [];
 
-        foreach ($fieldMap as $key => $value){
-            $fields[$key] = '<strong>' . $value->label . '</strong>';
+        foreach ($fieldMap as $key => $field) {
+
+            // use the value->label if field is label
+            $label = is_string($field) ? $field : $field->label;
+
+            $fields[$key] = '<strong>' . $label . '</strong>';
         };
 
         return $fields;
