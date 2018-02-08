@@ -106,15 +106,20 @@ trait FieldMapping
     /**
      * Returns the validation rules for this state
      */
-    public function getStateRules()
+    public function getStateRules($state_id)
     {
         $rules = [];
 
+        $state_id = 'state-'.$state_id;
+
         foreach ($this->getFieldMap() as $key => $field) {
+
+          //  dump($field);
+
             if ($field->cloneable) {
                 // Don't assume required for cloneable fields, developer should implement their own rules
 
-            } else if (!isSet($field->states[$this->state_id]) || $field->states[$this->state_id] == 'editable') {
+            } else if (!isSet($field->states[$state_id]) || $field->states[$state_id] == 'editable') {
                 $rules[$key] = 'required';
             }
         }

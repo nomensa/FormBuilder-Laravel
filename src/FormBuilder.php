@@ -166,7 +166,7 @@ class FormBuilder
      * @param string $row_name
      * @param string $field_name
      *
-     * @return string $row->value
+     * @return string $row->value or $row->date_value
      */
     public function getFieldValue($row_name, $field_name)
     {
@@ -177,9 +177,16 @@ class FormBuilder
         $submissionRows = $this->entryFormSubmission->formSubmissionFields;
 
         $row = $submissionRows->where('row_name', $row_name)->where('field_name', $field_name)->first();
+
         if (empty($row)) {
             return null;
         }
+
+        /* if we have a value set in date_value, return this */
+        if ($row->date_value) {
+            return $row->date_value;
+        }
+
         return $row->value;
     }
 

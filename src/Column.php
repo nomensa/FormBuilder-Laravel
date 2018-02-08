@@ -202,13 +202,33 @@ class Column
 
             case "checkboxes":
 
+                $values = json_decode($this->value, true) ?? [];
+
                 $attributes = $this->asFormArray(Column::WITH_LABEL);
                 $origID = $attributes['id'];
                 foreach ($this->options as $key => $option) {
                     $attributes['label'] = $option;
                     $attributes['id'] = $origID . '_' . $key;
-                    $output .= Field::checkbox($this->fieldNameWithBrackets . '[]', $key, $this->value, $attributes);
+                    $output .= Field::checkbox($this->fieldNameWithBrackets . '[]', $key, in_array($key,$values), $attributes);
                 }
+                return $output;
+                break;
+
+            case "checkboxes-readonly": /* Render text into the form and add hidden fields */
+
+                $attributes = $this->asFormArray(Column::WITH_LABEL);
+
+                $output .= '<div class="' . $this->classBundle . '">';
+                $output .= '<section class="section-readonly">';
+                $output .= MarkerUpper::wrapInTag($this->label, "h4");
+                $origID = $attributes['id'];
+                $values = json_decode($this->value, true);
+                $output .= '<ul id="' . $origID . '_values">';
+                foreach ($values as $i => $value) {
+                    $output .= Field::hidden($this->fieldNameWithBrackets . '[]', $value);
+                    $output .= '<li>' . $this->options[$value] . '</li>';
+                }
+                $output .= '</ul></section></div>';
                 return $output;
                 break;
 
@@ -245,6 +265,8 @@ class Column
 
                 if ($this->value === null) {
                     $this->value = $this->parseDefaultValue();
+                } else {
+                    $this->value = $this->value->format('Y-m-d');
                 }
 
                 // We create date as a text field (NOT date!) because we replace it with a data picker and don't want Chrome to be "helpful"
@@ -258,26 +280,18 @@ class Column
 
             case "date-readonly":  /* Render text into the form and add a hidden field */
 
-                $formattedDate = '';
-
-                $d = explode('-', $this->value);
-
-                if (count($d) == 3) {
-                    $dateString = $d[2] . '-' . $d[1] . '-' . $d[0];
-                    $formattedDate = Carbon::parse(trim($dateString))->format('j F Y');
-                }
-
                 $output .= '<div class="' . $this->classBundle . '">';
                 $output .= '<section class="section-readonly">';
                 $output .= MarkerUpper::wrapInTag($this->label, "h4");
-                $output .= MarkerUpper::wrapInTag($formattedDate,'p');
+                $output .= MarkerUpper::wrapInTag($this->value->format('j F Y'),'p');
                 $output .= '</section>';
                 $output .= '</div>';
-                $output .= Field::hidden($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
+                $output .= Field::hidden($this->fieldNameWithBrackets, $this->value->format('Y-m-d'), $this->asFormArray());
 
                 break;
 
             case "radios-readonly":  /* Render text into the form and add a hidden field */
+            case "number-readonly":
             case "select-readonly":  /* Render text into the form and add a hidden field */
 
                 if (!empty($this->value)) {
@@ -355,13 +369,6 @@ class Column
         }
 
         $output = '';
-
-        /**
-         * map fields to labels
-         * TODO refactor this to use values parsed from schema.json
-         */
-        Session::put('fields.' . str_replace(['.'], '_', $this->fieldName),
-            '<strong>' . $this->label . '</strong>');
 
         $state = $this->getState($formBuilder);
 
