@@ -134,7 +134,7 @@ trait MarkerUpper
             return false;
         }
 
-        $fields = parent::mapFieldsToLabels($fieldMap);
+        $fields = MarkerUpper::mapFieldsToLabels($fieldMap);
 
         $output = '';
 
