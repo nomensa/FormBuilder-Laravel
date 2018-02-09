@@ -9,6 +9,7 @@ use Illuminate\Support\MessageBag;
 
 class FormBuilder
 {
+
     use MarkerUpper;
     use FieldMapping;
 
@@ -18,7 +19,7 @@ class FormBuilder
     /** @var Group of rules for how fields are displayed */
     public $ruleGroups;
 
-    /** @var App\EntryFormInstance $formInstance  */
+    /** @var App\EntryFormInstance $formInstance */
     public $formInstance;
 
     /**  A key in the 'access' array in the schema that describes how a field is rendered */
@@ -30,10 +31,10 @@ class FormBuilder
     /** @var array - Any additional variables that need to be made available */
     public $viewData;
 
-    /** @var User  */
+    /** @var User */
     public $owner;
 
-    /** @var Any class that implements CSSClassProvider  */
+    /** @var Any class that implements CSSClassProvider */
     public $cssClassProvider;
 
     /** @var EntryFormSubmission */
@@ -54,9 +55,44 @@ class FormBuilder
             $component = new Component($component);
         }
 
-        $this->ruleGroups = (array)$options->rules;
+        // build up rule groups by cascading through options->rules;
+        $this->ruleGroups = $this->cascadeRuleGroups((array)$options->rules);
 
     }
+
+
+    /**
+     * Cascade through ruleGroups and append previous rules
+     *
+     * @param $ruleGroups
+     *
+     * @return mixed
+     */
+    private function cascadeRuleGroups($ruleGroups)
+    {
+
+        $prev = [];
+
+        // decode $ruleGroups object into nested array
+        $ruleGroupArray = json_decode(json_encode($ruleGroups), true);
+
+        foreach ($ruleGroupArray as $index => $ruleGroup) {
+
+            // merge the previous values
+            $ruleGroup = array_merge( $prev, $ruleGroup );
+
+            // save the last result for our next loop
+            $prev = $ruleGroup;
+
+            // encode the values into an object
+            $ruleGroups[$index] =  json_decode(json_encode($ruleGroup), FALSE);
+
+        }
+
+        return $ruleGroups;
+
+    }
+
 
     /**
      * @return string HTML markup
@@ -81,7 +117,7 @@ class FormBuilder
     {
         $ruleChain = $this->getRule($fieldName);
 
-        $rules = explode('|',$ruleChain);
+        $rules = explode('|', $ruleChain);
 
         foreach ($rules as $rule) {
             if (explode(':', $rule)[0] == $needle) {
@@ -128,6 +164,8 @@ class FormBuilder
     {
         $ruleGroupKey = $this->getRuleGroupKey();
 
+        dump($ruleGroupKey);
+
         $ruleGroup = $this->getRuleGroup($ruleGroupKey);
         if (isSet($ruleGroup[$fieldName])) {
             return $ruleGroup[$fieldName];
@@ -144,6 +182,9 @@ class FormBuilder
      */
     public function getRuleGroup($key)
     {
+
+        dump($this->ruleGroups[$key]);
+
         if (isSet($this->ruleGroups[$key])) {
             return (array)$this->ruleGroups[$key];
         }
@@ -153,13 +194,13 @@ class FormBuilder
 
     /**
      * Indicates if a submission of the form exists in the database
+     *
      * @return boolean
      */
     public function hasSubmission()
     {
         return empty($this->entryFormSubmission) == false;
     }
-
 
 
     /**
@@ -176,7 +217,9 @@ class FormBuilder
         }
         $submissionRows = $this->entryFormSubmission->formSubmissionFields;
 
-        $row = $submissionRows->where('row_name', $row_name)->where('field_name', $field_name)->first();
+        $row = $submissionRows->where('row_name', $row_name)
+          ->where('field_name', $field_name)
+          ->first();
 
         if (empty($row)) {
             return null;
@@ -194,7 +237,10 @@ class FormBuilder
     public function getErrorAnchor($fieldName)
     {
         if (!empty($this->errors->get($fieldName))) {
-            return MarkerUpper::wrapInTag('', 'a', ['name'=> MarkerUpper::makeErrorAnchorName($fieldName), 'class'=>'error-anchor' ]);
+            return MarkerUpper::wrapInTag('', 'a', [
+              'name' => MarkerUpper::makeErrorAnchorName($fieldName),
+              'class' => 'error-anchor',
+            ]);
         }
         return '';
     }
@@ -202,7 +248,8 @@ class FormBuilder
     public function getInlineFieldError($fieldName)
     {
 
-        return MarkerUpper::inlineFieldError($this->errors, $fieldName,$this->fieldMap);
+        return MarkerUpper::inlineFieldError($this->errors, $fieldName,
+          $this->fieldMap);
     }
 
     /**
