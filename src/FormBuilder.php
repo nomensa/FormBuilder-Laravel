@@ -164,9 +164,8 @@ class FormBuilder
     {
         $ruleGroupKey = $this->getRuleGroupKey();
 
-        dump($ruleGroupKey);
-
         $ruleGroup = $this->getRuleGroup($ruleGroupKey);
+
         if (isSet($ruleGroup[$fieldName])) {
             return $ruleGroup[$fieldName];
         }
@@ -182,9 +181,7 @@ class FormBuilder
      */
     public function getRuleGroup($key)
     {
-
-        dump($this->ruleGroups[$key]);
-
+        
         if (isSet($this->ruleGroups[$key])) {
             return (array)$this->ruleGroups[$key];
         }
