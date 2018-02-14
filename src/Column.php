@@ -5,7 +5,6 @@ namespace Nomensa\FormBuilder;
 use Field;
 use Form;
 use Html;
-use Session;
 use Auth;
 
 use Carbon\Carbon;
@@ -188,6 +187,10 @@ class Column
     {
         $output = '';
 
+        if ($this->value === null) {
+            $this->value = $this->parseDefaultValue($formBuilder);
+        }
+
         switch ($this->stateSpecificType) {
 
             case "ignore":
@@ -237,18 +240,10 @@ class Column
                 $attributes = $this->asFormArray();
                 $attributes['class'] = CSSClassFactory::selectClassBundle();
 
-                if ($this->value === null) {
-                    $this->value = $this->parseDefaultValue();
-                }
-
                 return Form::select($this->fieldNameWithBrackets, $this->options, $this->value, $attributes);
                 break;
 
             case "radios":
-
-                if ($this->value === null) {
-                    $this->value = $this->parseDefaultValue();
-                }
 
                 return Form::{$this->type}($this->fieldNameWithBrackets, $this->options, $this->value, $this->asFormArray());
                 break;
@@ -263,11 +258,7 @@ class Column
                 $this->dataAttributes['mindate'] = $formBuilder->ruleExists($this->fieldName, 'date_is_in_the_past') ? '-5y' : 0;
                 $this->dataAttributes['maxdate'] = $formBuilder->ruleExists($this->fieldName, 'date_is_in_the_future') ? '+5y' : 0;
 
-                if ($this->value === null) {
-                    $this->value = $this->parseDefaultValue();
-                } else {
-                    $this->value = $this->value->format('Y-m-d');
-                }
+                $this->value = $this->value->format('Y-m-d');
 
                 // We create date as a text field (NOT date!) because we replace it with a data picker and don't want Chrome to be "helpful"
                 return Field::text($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
@@ -506,11 +497,21 @@ class Column
      *
      * @return null|string
      */
-    private function parseDefaultValue()
+    private function parseDefaultValue(FormBuilder $formBuilder)
     {
         if ($this->default_value === 'TODAY') {
-            return Carbon::now()->format('d-m-Y');
+            return Carbon::now();
         }
+
+        if ($this->default_value === 'INCREMENTS_FOR_USER') {
+            $maxVal = $formBuilder->owner->formSubmissionFields
+                ->where('row_name',$this->row_name)
+                ->where('field_name',$this->field)
+                ->max('value');
+
+            return (int)$maxVal + 1;
+        }
+
         return $this->default_value;
     }
 
