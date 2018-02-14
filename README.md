@@ -39,7 +39,7 @@ Installation is easy with the following steps:
 Add the package to `composer.json` using the install command:
 
 ```bash
-$ composer install ...
+$ composer require nomensa/form-builder
 ```
 
 Add the service provider in `config/app.php` file:

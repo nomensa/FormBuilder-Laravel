@@ -11,7 +11,9 @@ Do the work
 
 ## Commit the work
 
-Commit your work on the master branch and push to origin.
+Commit your work on the master branch.
+
+Push `master` branch to origin.
 
 Have a look at what tags currently exist:
 
