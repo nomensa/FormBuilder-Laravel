@@ -21,7 +21,8 @@ class Column
     /** @var string */
     public $field = '';
     public $label = '';
-    public $type = "text";
+    public $type = 'text';
+    public $stateSpecificType = '';
 
     private $default_value;
 
@@ -187,12 +188,11 @@ class Column
     {
         $output = '';
 
-        switch ($this->type) {
+        switch ($this->stateSpecificType) {
 
             case "ignore":
                 // do not render this field at all
                 return '';
-
                 break;
 
             case "checkbox":
@@ -280,9 +280,7 @@ class Column
 
             case "date-readonly":  /* Render text into the form and add a hidden field */
 
-
                 if(!empty($this->value)) {
-
 
                     $output .= '<div class="' . $this->classBundle . '">';
                     $output .= '<section class="section-readonly">';
@@ -351,10 +349,12 @@ class Column
 
     /**
      * @param FormBuilder/FormBuilder $form
+     * @param int $totalCols
+     * @param null|int $group_index
      *
      * @return \Nomensa\FormBuilder\MarkUp
      */
-    public function markup(FormBuilder $formBuilder, $totalCols)
+    public function markup(FormBuilder $formBuilder, $totalCols, $group_index) : MarkUp
     {
         $this->classBundle = CSSClassFactory::colClassBundle($totalCols);
         $this->classBundle->add($this->classes);
@@ -366,8 +366,7 @@ class Column
         $this->label = $this->label ?? null;
         $this->displayMode = $formBuilder->displayMode;
 
-
-        $this->value = $formBuilder->getFieldValue($this->row_name, $this->field);
+        $this->value = $formBuilder->getFieldValue($this->row_name, $group_index, $this->field);
 
         if($this->value && !empty($this->helptextIfPreviouslySaved)) {
             $this->helptext = $this->helptextIfPreviouslySaved;
@@ -396,21 +395,23 @@ class Column
             $state = ($formBuilder->viewData[$keyName] == true) ? 'editable' : 'readonly';
         }
 
+        $this->stateSpecificType = $this->type;
+
         if ($state == 'readonly_for_owner' && $formBuilder->owner->id == Auth::user()->id ||
             $state == 'editable_for_owner' && $formBuilder->owner->id != Auth::user()->id ||
             $state != 'hidden' && $this->displayMode == 'readonly' ||
             $state == 'readonly')
         {
             $state = 'readonly';
-            $this->type = $this->type . '-' . $state;
+            $this->stateSpecificType = $this->type . '-' . $state;
         }
 
         if ($state == 'hidden') {
-            $this->type = 'hidden';
+            $this->stateSpecificType = 'hidden';
         }
 
         if ($state == 'ignore') {
-            $this->type = 'ignore';
+            $this->stateSpecificType = 'ignore';
         }
 
 
@@ -423,10 +424,12 @@ class Column
             $this->classBundle->add("errors");
         }
 
-        // if type is neither ignore  or hidden or readonly, wrap it in a container div
-        if($this->type != 'ignore' && $this->type != 'hidden' && substr($this->type, -9) != '-readonly') {
-            $output .= $formBuilder->getErrorAnchor($this->fieldName);
+        $columnHTML = $this->markupField($formBuilder);
 
+        // if type is neither ignore  or hidden or readonly, wrap it in a container div
+        if ($this->stateSpecificType != 'ignore' && $this->stateSpecificType != 'hidden' && $state != 'readonly') {
+
+            $output .= $formBuilder->getErrorAnchor($this->fieldName);
 
             $output .= '<div class="' . $this->classBundle . '">';
             if (isset($this->prefix)) {
@@ -453,7 +456,7 @@ class Column
                 $output .= '<div class="help_text">' . $this->helptext . '</div>';
             }
 
-            $output .= $this->markupField($formBuilder);
+            $output .= $columnHTML;
 
             if (!empty($this->suffix)) {
                 $output .= MarkerUpper::wrapInTag($this->suffix, 'div');
@@ -469,12 +472,15 @@ class Column
             }
 
             $output .= '</div>';
-        } elseif(substr($this->type, -9) == '-readonly'){
 
-            return new MarkUp($this->markupField($formBuilder));
+        } elseif ($state == 'readonly' && strlen($columnHTML)) {
+
+            return new MarkUp($columnHTML);
 
         } else {
-            return new MarkUp($this->markupField($formBuilder), MarkUp::NO_VISIBLE_CONTENT);
+
+            return new MarkUp($columnHTML, MarkUp::NO_VISIBLE_CONTENT);
+
         }
 
         return new MarkUp($output);

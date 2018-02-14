@@ -201,12 +201,30 @@ class FormBuilder
 
 
     /**
+     * @param $row_name Value on `form_submission_fields`.`row_name`
+     *
+     * @return int - Number of row_groups
+     */
+    public function getRowGroupValueCount($row_name) : int
+    {
+        // If there is no submission, we want 1 of everything
+        if ($this->entryFormSubmission === null) {
+            return 1;
+        }
+        $formSubmissionFields = $this->entryFormSubmission->formSubmissionFields;
+        $groups_indices = $formSubmissionFields->where('row_name', $row_name)->pluck('group_index');
+        return $groups_indices->unique()->count();
+    }
+
+
+    /**
      * @param string $row_name
+     * @param null|int $group_index
      * @param string $field_name
      *
-     * @return string $row->value or $row->date_value
+     * @return string|Carbon\Carbon $row->value or $row->date_value
      */
-    public function getFieldValue($row_name, $field_name)
+    public function getFieldValue($row_name, $group_index, $field_name)
     {
 
         if (!$this->hasSubmission()) {
@@ -214,9 +232,11 @@ class FormBuilder
         }
         $submissionRows = $this->entryFormSubmission->formSubmissionFields;
 
-        $row = $submissionRows->where('row_name', $row_name)
-          ->where('field_name', $field_name)
-          ->first();
+        $row = $submissionRows
+            ->where('row_name', $row_name)
+            ->where('group_index', $group_index)
+            ->where('field_name', $field_name)
+            ->first();
 
         if (empty($row)) {
             return null;

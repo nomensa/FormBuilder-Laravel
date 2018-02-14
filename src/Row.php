@@ -49,19 +49,20 @@ class Row
 
     /**
      * @param \Nomensa\FormBuilder\FormBuilder $form
+     * @param null|int $group_index
      *
      * @return string
      */
-    public function markup(FormBuilder $formBuilder)
+    public function markup(FormBuilder $formBuilder, $group_index) : string
     {
         $html = '';
         $colsMarkup = '';
         $rowHasVisibleContent = false;
 
-        if(isSet($this->columns)){
+        if (isSet($this->columns)) {
             $colCount = count($this->columns);
             foreach ($this->columns as $column) {
-                $colMarkup = $column->markup($formBuilder,$colCount);
+                $colMarkup = $column->markup($formBuilder,$colCount,$group_index);
                 $colsMarkup .= $colMarkup->html;
 
                 if ($colMarkup->hasVisibleContent) {
@@ -69,8 +70,6 @@ class Row
                 }
             }
         }
-
-        /* markup column */
 
         if ($this->title) {
             $html .= MarkerUpper::wrapInTag($this->title, 'h2', ['class' => 'heading']);
@@ -126,6 +125,5 @@ class Row
     {
         return $this->rowId.'.'.$this->field;
     }
-
 
 }

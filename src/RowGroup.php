@@ -12,7 +12,7 @@ class RowGroup
     /** @var bool */
     public $cloneable = false;
 
-    /** @var array - A RowGroup contains many Rows */
+    /** @var array - Can contain both Rows and RowGroups */
     public $rows = [];
 
     /**
@@ -48,24 +48,54 @@ class RowGroup
 
             }
         }
+
+    }
+
+    /**
+     * Calls markupClone the required number of times (mostly just once)
+     *
+     * @param \Nomensa\FormBuilder\FormBuilder $form
+     *
+     * @return string HTML markup
+     */
+    public function markup(FormBuilder $formBuilder) : string
+    {
+        $html = '';
+
+        if ($this->cloneable) {
+            // Decide if we need to look over multiple times
+            $rowGroupValueCounts = $formBuilder->getRowGroupValueCount($this->name);
+            for ($group_index = 0; $group_index < $rowGroupValueCounts; $group_index++) {
+                $html .= $this->markupClone($formBuilder, $group_index);
+            }
+        } else {
+            $html .= $this->markupClone($formBuilder);
+        }
+
+        return $html;
     }
 
     /**
      * Iterates over rows, concatenating markup
      *
      * @param \Nomensa\FormBuilder\FormBuilder $form
+     * @param null|int $group_index
      *
      * @return string HTML markup
      */
-    public function markup(FormBuilder $form)
+    private function markupClone(FormBuilder $formBuilder, $group_index = null) : string
     {
         $html = '';
         foreach ($this->rows as $row) {
-            $html .= $row->markup($form);
+            $html .= $row->markup($formBuilder, $group_index);
         }
         if ($this->cloneable) {
             $html = MarkerUpper::wrapInTag($html,'div',['class'=>'rowGroup-cloneable', 'id'=>$this->name]);
-            $html .= '<p><span class="btn btn-link btn-clone-rowGroup" data-target="' . $this->name . '">Add another</span></p>';
+
+            if ($formBuilder->displayMode !== 'readonly') {
+                $html .= '<p><span class="btn btn-link btn-clone-rowGroup" data-target="' . $this->name . '">Add another</span></p>';
+            }
+
         }
         return $html;
     }
