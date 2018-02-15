@@ -2,8 +2,6 @@
 
 namespace Nomensa\FormBuilder;
 
-use Session;
-
 /** A Trait to contain all the helper function for marking up HTML on FormBuilder */
 trait MarkerUpper
 {
@@ -75,6 +73,8 @@ trait MarkerUpper
 
 
     /**
+     * Generates markup for the block of error messages at the top of a page
+     *
      * @param $errors
      * @param string $errorMessageHeader
      * @param array $fieldMap
@@ -97,14 +97,14 @@ trait MarkerUpper
 
                 if (is_array($fieldMap)) {
 
-                    foreach ($fieldMap as $fieldName => $value) {
+                    foreach ($fieldMap as $fieldName => $label) {
                         $pos = strpos($error, $fieldName);
                         if ($pos !== false) {
-                            $error = substr_replace($error, $value->label, $pos, strlen($fieldName));
-                        };
+                            $error = substr_replace($error, $label, $pos, strlen($fieldName));
+                        }
                     }
 
-                    $error = str_replace('The', '', $error);
+                    $error = str_replace('The ', '', $error);
                     $error = str_replace('An ', '', $error);
                     $error = str_replace('Assessor', '<strong>Assessor</strong>', $error);
                     $error = str_replace('Unit', '<strong>Unit</strong>', $error);
@@ -154,7 +154,10 @@ trait MarkerUpper
 
             // TODO check error messages work with individual values from radios / checkbox arrays
 
-            $errorMessage = str_replace(array_keys($fields), array_values($fields), $errorMessage);
+            // Iterate over fields, replacing the whole field name (encapsulated with word boundaries) 
+            foreach ($fields as $key => $field) {
+                $errorMessage = preg_replace('/\b' . $key . '\b/', $field, $errorMessage);
+            }
 
             $output = '<div data-alert class="alert-box alert">';
             $output .= "<span>" . __($errorMessage) . "</span>";
@@ -171,17 +174,13 @@ trait MarkerUpper
      *
      * @return array
      */
-        public static function mapFieldsToLabels($fieldMap){
-
+    public static function mapFieldsToLabels($fieldMap) : array
+    {
         $fields = [];
 
-        foreach ($fieldMap as $key => $field) {
-
-            // use the value->label if field is label
-            $label = is_string($field) ? $field : $field->label;
-
+        foreach ($fieldMap as $key => $label) {
             $fields[$key] = '<strong>' . $label . '</strong>';
-        };
+        }
 
         return $fields;
     }

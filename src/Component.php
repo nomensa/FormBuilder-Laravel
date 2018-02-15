@@ -15,6 +15,9 @@ class Component
     /** @var string Optional name */
     public $rowGroupName;
 
+    /** @var string - A key-pair value to map the field IDs to a human-friendly names */
+    public $fieldMappings;
+
     public function __construct(array $component_schema)
     {
         $this->type = $component_schema['type'];
@@ -26,6 +29,9 @@ class Component
             $this->rowGroup = new RowGroup($component_schema['rows'], $this->rowGroupName);
         }
 
+        if (isSet($component_schema['field-mappings'])) {
+            $this->fieldMappings = $component_schema['field-mappings'];
+        }
     }
 
     /**

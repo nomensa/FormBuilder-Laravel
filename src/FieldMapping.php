@@ -10,24 +10,69 @@ namespace Nomensa\FormBuilder;
 trait FieldMapping
 {
 
-    /** @var an array of Fields and  */
-    private $fieldMap;
+    /** @var array - Array of Fields and  */
+    private $fields = [];
+
+    /** @var array - Key-pair values of field IDs to labels */
+    private $fieldMap = [];
 
 
     /**
      * Gets fieldMap if its set or makes it if it isnt
-     * @return mixed
+     *
+     * @return array
      */
-    public function getFieldMap()
+    public function getFieldMap() : array
     {
-
-        /* get an array of fieldnames and labels */
-
         if (!$this->fieldMap) {
-            $this->fieldMap = $this->mapFieldsFromSchema();
+            $this->fieldMap = $this->mapFieldMapFromSchema();
+        }
+        return $this->fieldMap;
+    }
+
+
+    /**
+     * @return array
+     */
+    private function mapFieldMapFromSchema() : array
+    {
+        $fields = [];
+
+        foreach ($this->components as $component) {
+
+            if (!empty($component->rowGroup)) {
+
+                $rowsWithColumns = $this->getRowsWithColumns($component->rowGroup);
+
+                foreach ($rowsWithColumns as $key => $column) {
+                    $fields[$key] = $column->label;
+                }
+
+            }
+
+            if ($component->fieldMappings) {
+                foreach ($component->fieldMappings as $id => $label) {
+                    $fields[$id] = $label;
+                }
+            }
+
         }
 
-        return $this->fieldMap;
+        return $fields;
+    }
+
+
+    /**
+     * Gets an array of Columns (fields) keys by ID
+     *
+     * @return array
+     */
+    public function getFields() : array
+    {
+        if (!$this->fields) {
+            $this->fields = $this->mapFieldsFromSchema();
+        }
+        return $this->fields;
     }
 
 
@@ -36,9 +81,8 @@ trait FieldMapping
      *
      * @return array
      */
-    private function mapFieldsFromSchema()
+    private function mapFieldsFromSchema() : array
     {
-
         $fields = [];
 
         foreach ($this->components as $component) {
@@ -48,9 +92,10 @@ trait FieldMapping
                 $rowsWithColumns = $this->getRowsWithColumns($component->rowGroup);
 
                 $fields = array_merge($fields, $rowsWithColumns);
+
             }
 
-        };
+        }
 
         return $fields;
     }
@@ -112,14 +157,12 @@ trait FieldMapping
 
         $state_id = 'state-'.$state_id;
 
-        foreach ($this->getFieldMap() as $key => $field) {
-
-          //  dump($field);
+        foreach ($this->getFields() as $key => $field) {
 
             if ($field->cloneable) {
                 // Don't assume required for cloneable fields, developer should implement their own rules
 
-            } else if (!isSet($field->states[$state_id]) || $field->states[$state_id] == 'editable') {
+            } elseif (!isSet($field->states[$state_id]) || $field->states[$state_id] == 'editable') {
                 $rules[$key] = 'required';
             }
         }
@@ -132,7 +175,7 @@ trait FieldMapping
     public function getEditableTextAreas()
     {
         $textareas = [];
-        foreach ($this->getFieldMap() as $key => $field) {
+        foreach ($this->getFields() as $key => $field) {
             if ((!isSet($field->states[$this->state_id]) || $field->states[$this->state_id] == 'editable') && $field->type =='textarea') {
 
                 $textareas[] = $key;
