@@ -97,14 +97,13 @@ class Row
     }
 
 
-
     /**
-     * @param $content
+     * @param string $content
      * @param array $attributes
      *
      * @return string
      */
-    private function wrapInRowTags($content, $attributes=[])
+    private function wrapInRowTags($content, $attributes=[]) : string
     {
         $classBundle = CSSClassFactory::rowClassBundle();
         if (!empty($attributes['class'])) {
@@ -113,17 +112,6 @@ class Row
         $attributes['class'] = $classBundle->__toString();
 
         return MarkerUpper::wrapInTag($content,'div',$attributes);
-    }
-
-
-
-    /**
-     * Returns field name
-     * @return string
-     */
-    public function getFieldName()
-    {
-        return $this->rowId.'.'.$this->field;
     }
 
 }
