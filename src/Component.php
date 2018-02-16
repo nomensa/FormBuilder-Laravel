@@ -41,7 +41,6 @@ class Component
      */
     public function markup(FormBuilder $formBuilder)
     {
-
         if ($this->type == "dynamic") {
             return $this->rowGroup->markup($formBuilder);
         } else {

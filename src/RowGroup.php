@@ -63,8 +63,9 @@ class RowGroup
         $html = '';
 
         if ($this->cloneable) {
-            // Decide if we need to look over multiple times
+            // Decide if we need to loop over multiple times
             $rowGroupValueCounts = $formBuilder->getRowGroupValueCount($this->name);
+
             for ($group_index = 0; $group_index < $rowGroupValueCounts; $group_index++) {
                 $html .= $this->markupClone($formBuilder, $group_index);
             }

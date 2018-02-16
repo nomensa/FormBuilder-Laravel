@@ -193,6 +193,7 @@ class Column
 
         switch ($this->stateSpecificType) {
 
+            case "hidden":
             case "ignore":
                 // do not render this field at all
                 return '';
@@ -258,7 +259,9 @@ class Column
                 $this->dataAttributes['mindate'] = $formBuilder->ruleExists($this->fieldName, 'date_is_in_the_past') ? '-5y' : 0;
                 $this->dataAttributes['maxdate'] = $formBuilder->ruleExists($this->fieldName, 'date_is_in_the_future') ? '+5y' : 0;
 
-                $this->value = $this->value->format('Y-m-d');
+                if ($this->value) {
+                    $this->value = $this->value->format('Y-m-d');
+                }
 
                 // We create date as a text field (NOT date!) because we replace it with a data picker and don't want Chrome to be "helpful"
                 return Field::text($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
@@ -339,7 +342,7 @@ class Column
 
 
     /**
-     * @param FormBuilder/FormBuilder $form
+     * @param \Nomensa\FormBuilder\FormBuilder $formBuilder
      * @param int $totalCols
      * @param null|int $group_index
      *
