@@ -1,12 +1,40 @@
 #!/bin/bash
 
+rm -rf .git
+
 git clone git@github.com:nomensa/FormBuilder-Laravel.git temp_git_repo
 
 mv temp_git_repo/.git .git
 
 rm -rf temp_git_repo
 
-echo "Enter your GitHub user email address: "
-read email
+contributors="$(git log --pretty=%ae | sort | uniq)"
+count="$( echo "$contributors" | grep -c '^' )"
+
+printf "\n\e[0;32mWhat's your GitHub user email address?\033[0m\n\n"
+
+email_addresses=()
+
+i=0
+for contributor in $contributors
+do
+    printf "  [\033[0;36m$i\033[0m] $contributor \n"
+    email_addresses[i]=$contributor
+    ((i++))
+done
+
+printf "\n\e[0;33mEnter option number or specify a new address:\033[0m \n> "
+read choice
+
+re='^[0-9]+$'
+if [[ $choice =~ $re ]] ; then
+    email=${email_addresses["$choice"]}
+else
+    email=$choice
+fi
+
+printf "You have chosen %s \n" "$email"
 
 git config user.email $email
+
+exit 0
