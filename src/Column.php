@@ -228,9 +228,12 @@ class Column
                 $origID = $attributes['id'];
                 $values = json_decode($this->value, true);
                 $output .= '<ul id="' . $origID . '_values">';
-                foreach ($values as $i => $value) {
-                    $output .= Field::hidden($this->fieldNameWithBrackets . '[]', $value);
-                    $output .= '<li>' . $this->options[$value] . '</li>';
+
+                if (is_array($values)) {
+                    foreach ($values as $i => $value) {
+                        $output .= Field::hidden($this->fieldNameWithBrackets . '[]', $value);
+                        $output .= '<li>' . $this->options[$value] . '</li>';
+                    }
                 }
                 $output .= '</ul></section></div>';
                 return $output;
