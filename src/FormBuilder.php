@@ -264,9 +264,7 @@ class FormBuilder
 
     public function getInlineFieldError($fieldName)
     {
-
-        return MarkerUpper::inlineFieldError($this->errors, $fieldName,
-          $this->fieldMap);
+        return MarkerUpper::inlineFieldError($this->errors, $fieldName, $this->fieldMap);
     }
 
     /**
@@ -290,6 +288,15 @@ class FormBuilder
             return null;
         }
         return config('formBuilder.maxChars') ?? null;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isReadOnly()
+    {
+        return ($this->displayMode === 'readonly');
     }
 
 
