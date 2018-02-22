@@ -226,28 +226,11 @@ class FormBuilder
      */
     public function getFieldValue($row_name, $group_index, $field_name)
     {
-
         if (!$this->hasSubmission()) {
             return null;
         }
-        $submissionRows = $this->entryFormSubmission->formSubmissionFields;
 
-        $row = $submissionRows
-            ->where('row_name', $row_name)
-            ->where('group_index', $group_index)
-            ->where('field_name', $field_name)
-            ->first();
-
-        if (empty($row)) {
-            return null;
-        }
-
-        /* if we have a value set in date_value, return this */
-        if ($row->date_value) {
-            return $row->date_value;
-        }
-
-        return $row->value;
+        return $this->entryFormSubmission->getFieldValue($row_name, $group_index, $field_name);
     }
 
 
