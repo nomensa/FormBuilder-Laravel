@@ -90,7 +90,7 @@ class RowGroup
         foreach ($this->rows as $row) {
             $html .= $row->markup($formBuilder, $group_index);
         }
-        if ($this->cloneable) {
+        if ($this->cloneable && strlen($html)) {
             $html = MarkerUpper::wrapInTag($html,'div',['class'=>'rowGroup-cloneable', 'id'=>$this->name]);
 
             if ($formBuilder->displayMode !== 'readonly') {
