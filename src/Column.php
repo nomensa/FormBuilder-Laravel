@@ -11,6 +11,8 @@ use Carbon\Carbon;
 
 use CSSClassFactory;
 
+use Nomensa\FormBuilder\Exceptions\InvalidSchemaException;
+
 class Column
 {
     const MULTI_OPTION_TYPES = ['checkboxes', 'radios'];
@@ -71,9 +73,23 @@ class Column
      */
     public function __construct(array $column_schema, bool $cloneable)
     {
-        $this->field = $column_schema['field'];
-        $this->label = $column_schema['label'];
-        $this->type = $column_schema['type'];
+        if (isSet($column_schema['field'])) {
+            $this->field = $column_schema['field'];
+        } else {
+            throw new InvalidSchemaException('Columns must have a "field" value');
+        }
+
+        if (isSet($column_schema['label'])) {
+            $this->label = $column_schema['label'];
+        } else {
+            throw new InvalidSchemaException('Columns must have a "label" value');
+        }
+
+        if (isSet($column_schema['type'])) {
+            $this->type = $column_schema['type'];
+        } else {
+            throw new InvalidSchemaException('Columns must have a "type" value');
+        }
 
         $this->default_value = $column_schema['default_value'] ?? null;
 

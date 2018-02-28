@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 
 use Nomensa\FormBuilder\FormBuilder;
+use Nomensa\FormBuilder\Exceptions\InvalidSchemaException;
 
 class FormBuilderTest extends TestCase {
 
@@ -11,6 +12,87 @@ class FormBuilderTest extends TestCase {
         $this->assertEquals(FormBuilder::htmlNameAttribute('rcoa.foo.bar'),'rcoa[foo][bar]');
     }
 
+    public function testMissingColumnFieldValueCausesInvalidSchemaException()
+    {
+        $this->expectException(InvalidSchemaException::class);
+        $this->expectExceptionMessage('Columns must have a "field" value');
+
+        $jsonSchema = '[
+            {
+                "type": "dynamic",
+                "rows": [
+                  {
+                    "columns": [
+                      { 
+                        
+                      }
+                    ]
+                  }
+                ]
+             }]';
+        $schema = json_decode($jsonSchema, true);
+
+        $options = json_decode('{}', false);
+
+        new FormBuilder($schema, $options);
+    }
+
+    public function testMissingColumnLabelValueCausesInvalidSchemaException()
+    {
+        $this->expectException(InvalidSchemaException::class);
+        $this->expectExceptionMessage('Columns must have a "label" value');
+
+        $jsonSchema = '[
+            {
+                "type": "dynamic",
+                "rows": [
+                  {
+                    "columns": [
+                      { 
+                        "field": "field-1"
+                      }
+                    ]
+                  }
+                ]
+             }]';
+        $schema = json_decode($jsonSchema, true);
+
+        $options = json_decode('{}', false);
+
+        new FormBuilder($schema, $options);
+    }
+
+    public function testMissingColumnTypeValueCausesInvalidSchemaException()
+    {
+        $this->expectException(InvalidSchemaException::class);
+        $this->expectExceptionMessage('Columns must have a "type" value');
+
+        $jsonSchema = '[
+            {
+                "type": "dynamic",
+                "rows": [
+                  {
+                    "columns": [
+                      { 
+                        "field": "field-1",
+                        "label": "Field One"
+                      }
+                    ]
+                  }
+                ]
+             }]';
+        $schema = json_decode($jsonSchema, true);
+
+        $options = json_decode('{}', false);
+
+        new FormBuilder($schema, $options);
+    }
+
+    /**
+     * Creates a valid instance of FormBuilder for use in several tests below
+     *
+     * @return FormBuilder
+     */
     private function makeTestFormBuilder()
     {
         $jsonSchema = '[
@@ -20,7 +102,9 @@ class FormBuilderTest extends TestCase {
                   {
                     "columns": [
                       { 
-                        "field": "field-1"
+                        "field": "field-1",
+                        "label": "Field One",
+                        "type": "text"
                       }
                     ]
                   }

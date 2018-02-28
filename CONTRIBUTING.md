@@ -7,9 +7,19 @@ Run the following to make the `vendor/nomensa/form-builder` a fully fledged Git 
 $ bash getgit
 ```
 
-Do the work
+## Do the work
 
-## Commit the work
+Write your code conforming to all the standards that Laravel does. Space-indentation, PSR-2 style. Make it beautiful.
+
+
+## Test your work
+
+From the package directory run `composer install` to download the PHPUnit binaries and then simply run `composer test` to run the tests.
+
+Obviously you're going to want to write tests to cover your new code so do that in the `tests` folder. 
+
+
+## Commit and version tag your work
 
 Commit your work on the master branch.
 

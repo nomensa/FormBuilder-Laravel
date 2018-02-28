@@ -133,6 +133,10 @@ class FormBuilder
     {
         $ruleGroupKey = 'default';
 
+        if (!$this->formInstance) {
+            return $ruleGroupKey;
+        }
+
         switch ($this->formInstance->entryForm->code) {
 
             case 'RCOA_005':
