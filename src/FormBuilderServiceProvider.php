@@ -15,4 +15,9 @@ class FormBuilderServiceProvider extends ServiceProvider {
         $this->commands($this->commands);
     }
 
+    public function boot()
+    {
+        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+    }
+
 }
