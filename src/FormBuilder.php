@@ -226,7 +226,7 @@ class FormBuilder
      * @param null|int $group_index
      * @param string $field_name
      *
-     * @return string|Carbon\Carbon $row->value or $row->date_value
+     * @return string|\Carbon\Carbon $row->value or $row->date_value
      */
     public function getFieldValue($row_name, $group_index, $field_name)
     {
@@ -235,6 +235,43 @@ class FormBuilder
         }
 
         return $this->entryFormSubmission->getFieldValue($row_name, $group_index, $field_name);
+    }
+
+
+    /**
+     * Gets options from schema
+     *
+     * @param string $row_name
+     * @param string $field_name
+     *
+     * @return array
+     */
+    public function getFieldOptions($row_name, $field_name) : array
+    {
+        foreach ($this->components as $component) {
+            $options = $component->findFieldOptions($row_name, $field_name);
+            if ($options) {
+                return $options;
+            }
+        }
+        return [];
+    }
+
+
+    /**
+     * @param string $row_name
+     * @param string $field_name
+     * @param string $value_key
+     *
+     * @return string
+     */
+    public function getFieldHumanValue($row_name, $field_name, $value_key) : string
+    {
+        $options = $this->getFieldOptions($row_name, $field_name);
+        if (isSet($options[$value_key])) {
+            return $options[$value_key];
+        }
+        return $value_key;
     }
 
 

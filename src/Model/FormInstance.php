@@ -5,6 +5,7 @@ namespace Nomensa\FormBuilder\Model;
 use Illuminate\Database\Eloquent\Model;
 use Nomensa\FormBuilder\Exceptions\InvalidSchemaException;
 use File;
+use Nomensa\FormBuilder\FormBuilder;
 
 class FormInstance extends Model
 {
@@ -21,6 +22,8 @@ class FormInstance extends Model
      * @param $assoc bool
      *
      * @return array
+     *
+     * @throws InvalidSchemaException
      */
     public function getSchema($assoc=true) : array
     {
@@ -48,6 +51,8 @@ class FormInstance extends Model
      * Load Default options if the field isnt present in the db
      *
      * @return string
+     *
+     * @throws InvalidSchemaException
      */
     public function getOptions()
     {
@@ -72,7 +77,9 @@ class FormInstance extends Model
     /**
      * Get Form Schema saved in the file system
      *
-     * @return File
+     * @return string
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function getSavedSchema()
     {
@@ -83,11 +90,26 @@ class FormInstance extends Model
     /**
      * Get Form Options saved in the file system
      *
-     * @return File
+     * @return string
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function getSavedOptions()
     {
         return File::get($this->getFormDefinitionFolder() . '/' . $this->options_filename);
+    }
+
+
+    /**
+     * @return FormBuilder
+     */
+    public function getFormBuilder() : FormBuilder
+    {
+        $schema = $this->getSchema();
+        $options = $this->getOptions();
+        $formBuilder = new FormBuilder($schema,$options);
+        $formBuilder->formInstance = $this;
+        return $formBuilder;
     }
 
 

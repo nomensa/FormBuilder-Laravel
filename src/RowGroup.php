@@ -79,7 +79,7 @@ class RowGroup
     /**
      * Iterates over rows, concatenating markup
      *
-     * @param \Nomensa\FormBuilder\FormBuilder $form
+     * @param \Nomensa\FormBuilder\FormBuilder $formBuilder
      * @param null|int $group_index
      *
      * @return string HTML markup
@@ -99,6 +99,23 @@ class RowGroup
 
         }
         return $html;
+    }
+
+
+    /**
+     * @param string $row_name
+     * @param string $field_name
+     *
+     * @return null|array
+     */
+    public function findFieldOptions($row_name, $field_name)
+    {
+        foreach ($this->rows as $row) {
+            $options = $row->findFieldOptions($row_name, $field_name);
+            if ($options) {
+                return $options;
+            }
+        }
     }
 
 }

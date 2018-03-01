@@ -95,34 +95,43 @@ class FormBuilderTest extends TestCase {
      */
     private function makeTestFormBuilder()
     {
-        $jsonSchema = '[
-            {
-                "type": "dynamic",
-                "rows": [
-                  {
+        $jsonSchema = '[{
+            "type": "dynamic",
+            "rows": [
+                {
                     "columns": [
-                      { 
-                        "field": "field-1",
-                        "label": "Field One",
-                        "type": "text"
-                      }
+                        { 
+                            "field": "field-1",
+                            "label": "Field One",
+                            "type": "text"
+                        },
+                        {
+                            "field": "favourite-horse",
+                            "label": "Favourite Horse",
+                            "type": "radios",
+                            "options": {
+                                "mr-ed": "Mr. Ed",
+                                "black-beauty": "Black Beauty",
+                                "silver": "Silver"
+                            }
+                        }
                     ]
-                  }
-                ]
-             }]';
+                }
+            ]
+        }]';
         $schema = json_decode($jsonSchema, true);
 
         $jsonOptions = '{
-                "rules": {
-                    "draft": {},
-                    "default": {
-                        "field-1": "nullable",
-                        "field-2": "required",
-                        "field-3": "max:255|required",
-                        "field-4": "required_if:field-7,1"
-                    }
+            "rules": {
+                "draft": {},
+                "default": {
+                    "field-1": "nullable",
+                    "favourite-horse": "required",
+                    "field-3": "max:255|required",
+                    "field-4": "required_if:field-7,1"
                 }
-            }';
+            }
+        }';
 
         $options = json_decode($jsonOptions, false);
 
@@ -158,5 +167,26 @@ class FormBuilderTest extends TestCase {
         $formBuilder = $this->makeTestFormBuilder();
         $this->assertFalse($formBuilder->ruleExists("field-4","required"));
     }
+
+    public function testGetFieldOptions()
+    {
+        $expectedOptions = [
+            "mr-ed" => "Mr. Ed",
+            "black-beauty" => "Black Beauty",
+            "silver" => "Silver"
+        ];
+
+        $formBuilder = $this->makeTestFormBuilder();
+        $options = $formBuilder->getFieldOptions('dynamic','favourite-horse');
+        $this->assertEquals($expectedOptions,$options);
+    }
+
+    public function testGetFieldHumanValue()
+    {
+        $formBuilder = $this->makeTestFormBuilder();
+        $option = $formBuilder->getFieldHumanValue('dynamic','favourite-horse','black-beauty');
+        $this->assertEquals("Black Beauty",$option);
+    }
+
 
 }

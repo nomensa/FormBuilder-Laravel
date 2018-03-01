@@ -6,7 +6,7 @@ use View;
 
 class Component
 {
-    /** @var */
+    /** @var string */
     public $type;
 
     /** @var Instance of \Nomensa\FormBuilder\RowGroup */
@@ -51,6 +51,18 @@ class Component
             return $view->render();
         }
 
+    }
+
+
+    /**
+     * @param string $row_name
+     * @param string $field_name
+     *
+     * @return null|array
+     */
+    public function findFieldOptions($row_name, $field_name)
+    {
+        return $this->rowGroup->findFieldOptions($row_name, $field_name);
     }
 
 }
