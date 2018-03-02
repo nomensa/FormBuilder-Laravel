@@ -19,7 +19,7 @@ class FormBuilder
     /** @var Group of rules for how fields are displayed */
     public $ruleGroups;
 
-    /** @var App\EntryFormInstance $formInstance */
+    /** @var \App\FormInstance $formInstance */
     public $formInstance;
 
     /**  A key in the 'access' array in the schema that describes how a field is rendered */

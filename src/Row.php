@@ -3,6 +3,7 @@
 namespace Nomensa\FormBuilder;
 
 use CSSClassFactory;
+use Nomensa\FormBuilder\Exceptions\InvalidSchemaException;
 
 class Row
 {
@@ -11,7 +12,10 @@ class Row
 
     /** @var string */
     protected $title;
-    protected $intro;
+
+    /** @var string */
+    protected $editing_instructions;
+
     protected $description;
     protected $notes;
 
@@ -23,13 +27,15 @@ class Row
      *
      * @param array $row_schema Defines a single row of a RowGroup. Can contain 'title', 'intro', 'description', 'notes'
      * @param bool $cloneable
+     *
+     * @throws InvalidSchemaException
      */
     public function __construct(array $row_schema, bool $cloneable = false)
     {
         $this->cloneable = $cloneable;
 
         $this->title = $row_schema['title'] ?? '';
-        $this->intro = $row_schema['intro'] ?? '';
+        $this->editing_instructions = $row_schema['editing_instructions'] ?? '';
         $this->description = $row_schema['description'] ?? '';
         $this->notes = $row_schema['notes'] ?? '';
         $this->columns = $row_schema['columns'] ?? null;
@@ -48,7 +54,7 @@ class Row
 
 
     /**
-     * @param \Nomensa\FormBuilder\FormBuilder $form
+     * @param \Nomensa\FormBuilder\FormBuilder $formBuilder
      * @param null|int $group_index
      *
      * @return string
@@ -75,8 +81,8 @@ class Row
             $html .= MarkerUpper::wrapInTag($this->title, 'h2', ['class' => 'heading']);
         }
 
-        if ($this->intro) {
-            $html .= MarkerUpper::wrapInTag($this->intro, 'p');
+        if ($this->editing_instructions && !$formBuilder->isReadOnly()) {
+            $html .= MarkerUpper::wrapInTag($this->editing_instructions, 'p');
         }
 
         if ($this->description) {
