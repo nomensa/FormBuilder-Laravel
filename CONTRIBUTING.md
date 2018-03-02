@@ -44,10 +44,11 @@ Push the tag to the GitHub repo:
 git push origin v0.6.0
 ```
 
-Change directory back up to the application, SSH into your vagrant box and tell Composer to use the new version of the package:
+Change directory back up 3 levels to app level and tell Composer to use the new version of the package:
 
 ```
 $ composer update nomensa/form-builder
-$ composer require nomensa/form-builder 0.6.0
+$ composer require nomensa/form-builder ~0.19.2
 ```
 
+_N.B. I recommend using the tilda to lock major and minor version number but allow patch version to be higher._
