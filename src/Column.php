@@ -238,20 +238,24 @@ class Column
 
                 $attributes = $this->asFormArray(Column::WITH_LABEL);
 
+                $values = json_decode($this->value, true);
+                if ($values===null) {
+                    return '';
+                }
                 $output .= '<div class="' . $this->classBundle . '">';
                 $output .= '<section class="section-readonly">';
-                $output .= MarkerUpper::wrapInTag($this->label, "h4");
+                $output .= MarkerUpper::wrapInTag($this->label . $this->type, "h4");
                 $origID = $attributes['id'];
-                $values = json_decode($this->value, true);
-                $output .= '<ul id="' . $origID . '_values">';
 
                 if (is_array($values)) {
+                    $output .= '<ul id="' . $origID . '_values">';
                     foreach ($values as $i => $value) {
                         $output .= Field::hidden($this->fieldNameWithBrackets . '[]', $value);
                         $output .= '<li>' . $this->options[$value] . '</li>';
                     }
+                    $output .= '</ul>';
                 }
-                $output .= '</ul></section></div>';
+                $output .= '</section></div>';
                 return $output;
                 break;
 
