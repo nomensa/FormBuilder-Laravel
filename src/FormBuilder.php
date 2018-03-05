@@ -4,7 +4,7 @@ namespace Nomensa\FormBuilder;
 
 use App\User;
 use App\EntryFormInstance;
-use App\EntryFormSubmission;
+use App\FormSubmission;
 use Illuminate\Support\MessageBag;
 
 class FormBuilder
@@ -37,8 +37,8 @@ class FormBuilder
     /** @var Any class that implements CSSClassProvider */
     public $cssClassProvider;
 
-    /** @var EntryFormSubmission */
-    public $entryFormSubmission;
+    /** @var FormSubmission */
+    public $formSubmission;
 
     /** @var MessageBag */
     public $errors;
@@ -200,7 +200,7 @@ class FormBuilder
      */
     public function hasSubmission()
     {
-        return empty($this->entryFormSubmission) == false;
+        return empty($this->formSubmission) == false;
     }
 
 
@@ -212,10 +212,10 @@ class FormBuilder
     public function getRowGroupValueCount($row_name) : int
     {
         // If there is no submission, we want 1 of everything
-        if ($this->entryFormSubmission === null) {
+        if ($this->formSubmission === null) {
             return 1;
         }
-        $formSubmissionFields = $this->entryFormSubmission->formSubmissionFields;
+        $formSubmissionFields = $this->formSubmission->formSubmissionFields;
         $groups_indices = $formSubmissionFields->where('row_name', $row_name)->pluck('group_index');
         return $groups_indices->unique()->count();
     }
@@ -234,7 +234,7 @@ class FormBuilder
             return null;
         }
 
-        return $this->entryFormSubmission->getFieldValue($row_name, $group_index, $field_name);
+        return $this->formSubmission->getFieldValue($row_name, $group_index, $field_name);
     }
 
 
