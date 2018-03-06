@@ -147,9 +147,9 @@ class FormBuilder
 
             default:
 
-                $ruleGroupKey = ($this->state_id == 2 && $this->formInstance->workflow->name == 'assessor-approval') ? 'signoff' : $ruleGroupKey;
+                $ruleGroupKey = ($this->state_id == 2 && $this->formInstance->workflow && $this->formInstance->workflow->name == 'assessor-approval') ? 'signoff' : $ruleGroupKey;
 
-                $ruleGroupKey = ($this->state_id == 1 && $this->formInstance->workflow->name == 'learner-approval') ? 'signoff-learner-approval' : $ruleGroupKey;
+                $ruleGroupKey = ($this->state_id == 1 && $this->formInstance->workflow && $this->formInstance->workflow->name == 'learner-approval') ? 'signoff-learner-approval' : $ruleGroupKey;
 
                 break;
         }
