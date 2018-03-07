@@ -66,7 +66,14 @@ class RowGroup
             // Decide if we need to loop over multiple times
             $rowGroupValueCounts = $formBuilder->getRowGroupValueCount($this->name);
 
-            for ($group_index = 0; $group_index < $rowGroupValueCounts; $group_index++) {
+            // Add a hidden field to track to number of active groups
+            $html .= '<input type="hidden" id="cloneableRowGroupsCounts-' . $this->name . '" name="cloneableRowGroupsCounts[' . $this->name . ']" value="' . $rowGroupValueCounts . '">';
+
+            // We ALWAYS want at least 1 copy of a cloneable rowGroup, otherwise editing
+            // a form attempting to add a group for the first time is impossible.
+            $iLimit = max(1,$rowGroupValueCounts);
+
+            for ($group_index = 0; $group_index < $iLimit; $group_index++) {
                 $html .= $this->markupClone($formBuilder, $group_index);
             }
         } else {
