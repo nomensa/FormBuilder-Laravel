@@ -226,7 +226,7 @@ class FormBuilder
      * @param null|int $group_index
      * @param string $field_name
      *
-     * @return string|\Carbon\Carbon $row->value or $row->date_value
+     * @return string|\Carbon\Carbon $row->value or $row->value_date
      */
     public function getFieldValue($row_name, $group_index, $field_name)
     {

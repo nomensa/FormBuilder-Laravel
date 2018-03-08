@@ -20,8 +20,11 @@ class CreateFormSubmissionFieldsTable extends Migration
             $table->string('row_name',64)->nullable();
             $table->integer('group_index')->unsigned()->nullable(); // Used for cloneable RowGroups
             $table->string('field_name', 100);
-            $table->text('value')->nullable();
-            $table->date('date_value')->nullable();
+
+            // Different types of value
+            $table->string('value')->nullable();
+            $table->integer('value_int')->nullable();
+            $table->date('value_date')->nullable();
 
             $table->integer('weight');
             $table->integer('randomiser')->nullable();
