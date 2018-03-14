@@ -67,7 +67,7 @@ class RowGroup
             $rowGroupValueCounts = $formBuilder->getRowGroupValueCount($this->name);
 
             // Add a hidden field to track to number of active groups
-            $html .= '<input type="hidden" id="cloneableRowGroupsCounts-' . $this->name . '" name="cloneableRowGroupsCounts[' . $this->name . ']" value="' . $rowGroupValueCounts . '">';
+            $html .= '<input type="hidden" id="cloneableRowGroupsCounts-' . $this->name . '" name="cloneableRowGroupsCounts[' . $this->name . ']" value="' . $rowGroupValueCounts . '">' . PHP_EOL . PHP_EOL;
 
             // We ALWAYS want at least 1 copy of a cloneable rowGroup, otherwise editing
             // a form attempting to add a group for the first time is impossible.
@@ -76,6 +76,11 @@ class RowGroup
             for ($group_index = 0; $group_index < $iLimit; $group_index++) {
                 $html .= $this->markupClone($formBuilder, $group_index);
             }
+
+            if ($formBuilder->displayMode !== 'readonly') {
+                $html .= '<p><span class="btn btn-link btn-clone-rowGroup" data-target="' . $this->name . '">Add another</span></p>';
+            }
+
         } else {
             $html .= $this->markupClone($formBuilder);
         }
@@ -97,12 +102,24 @@ class RowGroup
         foreach ($this->rows as $row) {
             $html .= $row->markup($formBuilder, $group_index);
         }
-        if ($this->cloneable && strlen($html)) {
-            $html = MarkerUpper::wrapInTag($html,'div',['class'=>'rowGroup-cloneable', 'id'=>$this->name]);
 
-            if ($formBuilder->displayMode !== 'readonly') {
-                $html .= '<p><span class="btn btn-link btn-clone-rowGroup" data-target="' . $this->name . '">Add another</span></p>';
+        if ($this->cloneable && strlen($html)) {
+
+            $html .= '<div class="text-right remove-button-wrapper" style="display: none;">';
+            $html .= '<a class="btn btn-link btn-remove-rowGroup" data-target="' . $this->name . '">Remove</a>';
+            $html .= '</div>';
+
+            $attributes = [
+                'class' => 'rowGroup-cloneable',
+                'id' => $this->name
+            ];
+            if ($group_index > 0) {
+                $attributes['class'] .= ' ' . $this->name . '-clone';
+                $attributes['class'] .= ' clone-' . $group_index;
+                unset($attributes['id']);
             }
+            $html = MarkerUpper::wrapInTag($html,'div',$attributes);
+
 
         }
         return $html;

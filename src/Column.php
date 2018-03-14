@@ -199,12 +199,17 @@ class Column
      *
      * @return \Illuminate\Support\HtmlString|string
      */
-    private function markupField(FormBuilder $formBuilder)
+    private function markupField(FormBuilder $formBuilder, $group_index)
     {
         $output = '';
 
         if ($this->value === null) {
             $this->value = $this->parseDefaultValue($formBuilder);
+        }
+
+        if ($this->cloneable) {
+            // Replace the zero surrounded by dots with the clone number
+            $this->fieldNameWithBrackets = preg_replace('/\[0\]/', '[' . $group_index . ']', $this->fieldNameWithBrackets);
         }
 
         switch ($this->stateSpecificType) {
@@ -441,7 +446,7 @@ class Column
             $this->classBundle->add("errors");
         }
 
-        $columnHTML = $this->markupField($formBuilder);
+        $columnHTML = $this->markupField($formBuilder, $group_index);
 
         // if type is neither ignore  or hidden or readonly, wrap it in a container div
         if ($this->stateSpecificType != 'ignore' && $this->stateSpecificType != 'hidden' && $state != 'readonly') {
