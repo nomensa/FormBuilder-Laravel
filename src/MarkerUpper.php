@@ -85,7 +85,7 @@ trait MarkerUpper
     {
         $defaultErrorMessage = config('constants.errors.default');
 
-        $output = '<section id="sectionPageErrors">';
+        $output = '<div id="sectionPageErrors">';
         $output .= !empty($errorMessageHeader) ? "<h2>" . $errorMessageHeader . "</h2>" : "<h2>" . $defaultErrorMessage . "</h2>";
 
         foreach ($errors->getBag('default')->toArray() as $index => $errorMessages) {
@@ -115,7 +115,7 @@ trait MarkerUpper
             }
         }
 
-        $output .= "</section>";
+        $output .= '</div>' . PHP_EOL . '<!-- /#sectionPageErrors -->' . PHP_EOL;
 
         return $output;
     }

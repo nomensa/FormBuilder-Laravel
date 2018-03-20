@@ -248,7 +248,7 @@ class Column
                     return '';
                 }
                 $output .= '<div class="' . $this->classBundle . '">';
-                $output .= '<section class="section-readonly">';
+                $output .= '<div class="section-readonly">';
                 $output .= MarkerUpper::wrapInTag($this->label . $this->type, "h4");
                 $origID = $attributes['id'];
 
@@ -260,7 +260,8 @@ class Column
                     }
                     $output .= '</ul>';
                 }
-                $output .= '</section></div>';
+                $output .= '</div>' . PHP_EOL . '<!-- /.section-readonly -->' . PHP_EOL;
+                $output .= '</div>' . PHP_EOL;
                 return $output;
                 break;
 
@@ -305,11 +306,11 @@ class Column
                 if(!empty($this->value)) {
 
                     $output .= '<div class="' . $this->classBundle . '">';
-                    $output .= '<section class="section-readonly">';
+                    $output .= '<div class="section-readonly">';
                     $output .= MarkerUpper::wrapInTag($this->label, "h4");
                     $output .= MarkerUpper::wrapInTag($this->value->format('j F Y'), 'p');
-                    $output .= '</section>';
-                    $output .= '</div>';
+                    $output .= '</div>' . PHP_EOL . '<!-- /.section-readonly -->' . PHP_EOL;
+                    $output .= '</div>' . PHP_EOL;
                     $output .= Field::hidden($this->fieldNameWithBrackets,
                       $this->value->format('Y-m-d'), $this->asFormArray());
                 }
@@ -321,7 +322,7 @@ class Column
 
                 if (!empty($this->value)) {
                     $output .= '<div class="' . $this->classBundle . '">';
-                    $output .= '<section class="section-readonly">';
+                    $output .= '<div class="section-readonly">';
 
                     if (isset($this->parentTitle)) {
                         $output .= MarkerUpper::wrapInTag($this->parentTitle, "h3");
@@ -329,8 +330,8 @@ class Column
 
                     $output .= MarkerUpper::wrapInTag($this->label, "h4");
                     $output .= MarkerUpper::wrapInTag($this->options[$this->value],'p');
-                    $output .= '</section>';
-                    $output .= '</div>';
+                    $output .= '</div>' . PHP_EOL . '<!-- /.section-readonly -->' . PHP_EOL;
+                    $output .= '</div>' . PHP_EOL;
                     $output .= Field::hidden($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
                 }
                 break;
@@ -341,12 +342,12 @@ class Column
 
                 if (!empty($this->value)) {
                     $output .= '<div class="' . $this->classBundle . '">';
-                    $output .= '<section class="section-readonly">';
+                    $output .= '<div class="section-readonly">';
                     $output .= MarkerUpper::wrapInTag($this->label, "h4");
                     $output .= MarkerUpper::wrapInTag($this->value,'p');
-                    $output .= '</section>';
+                    $output .= '</div>' . PHP_EOL . '<!-- /.section-readonly -->' . PHP_EOL;
                     $output .= Field::hidden($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
-                    $output .= '</div>';
+                    $output .= '</div>' . PHP_EOL;
 
                 }
                 break;
