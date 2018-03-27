@@ -62,7 +62,9 @@ class Component
      */
     public function findFieldOptions($row_name, $field_name)
     {
-        return $this->rowGroup->findFieldOptions($row_name, $field_name);
+        if ($this->rowGroup) {
+            return $this->rowGroup->findFieldOptions($row_name, $field_name);
+        }
     }
 
 }
