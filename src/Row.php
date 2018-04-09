@@ -77,7 +77,7 @@ class Row
             }
         }
 
-        if ($this->title) {
+        if ($this->title && $rowHasVisibleContent) {
             $html .= MarkerUpper::wrapInTag($this->title, 'h2', ['class' => 'heading']);
         }
 
