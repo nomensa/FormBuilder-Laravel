@@ -92,15 +92,17 @@ trait MarkerUpper
 
             $errorAnchorName = MarkerUpper::makeErrorAnchorName($index);
 
-            foreach($errorMessages as $error) {
+            foreach ($errorMessages as $error) {
                 $error = strip_tags($error);
 
                 if (is_array($fieldMap)) {
 
                     foreach ($fieldMap as $fieldName => $label) {
-                        $pos = strpos($error, $fieldName);
-                        if ($pos !== false) {
-                            $error = substr_replace($error, $label, $pos, strlen($fieldName));
+
+                        $result = preg_match("/\b" . $fieldName . "\b/i", $error);
+
+                        if ($result !== false) {
+                            $error = preg_replace("/\b" . $fieldName . "\b/", $label, $error);
                         }
                     }
 
