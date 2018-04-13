@@ -17,7 +17,6 @@ class CreateFormInstancesTable extends Migration
         Schema::create($this->table, function (Blueprint $table) {
             $table->increments('id');
             $table->integer('entry_form_id');
-            $table->integer('entry_form_instance_i_a_c_code_id')->nullable();
             $table->integer('form_instance_parent_id')->nullable();
 
             $table->string('title');
