@@ -288,6 +288,11 @@ class Column
                 $this->dataAttributes['mindate'] = $formBuilder->ruleExists($this->fieldName, 'date_is_in_the_past') ? '-5y' : 0;
                 $this->dataAttributes['maxdate'] = $formBuilder->ruleExists($this->fieldName, 'date_is_in_the_future') ? '+5y' : 0;
 
+                $rule = $formBuilder->ruleExists($this->fieldName, 'before');
+                if ($rule && $rule == "before:today") {
+                    $this->dataAttributes['mindate'] = '-5y';
+                }
+
                 if ($this->value) {
                     $this->value = $this->value->format('Y-m-d');
                 }

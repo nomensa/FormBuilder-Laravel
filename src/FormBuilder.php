@@ -111,7 +111,7 @@ class FormBuilder
      * @param $fieldName
      * @param string $needle Rule keyword to look for eg 'nullable'
      *
-     * @return boolean
+     * @return string|boolean
      */
     public function ruleExists($fieldName, $needle)
     {
@@ -121,7 +121,7 @@ class FormBuilder
 
         foreach ($rules as $rule) {
             if (explode(':', $rule)[0] == $needle) {
-                return true;
+                return $rule;
             }
         }
 
