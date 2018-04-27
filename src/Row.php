@@ -15,6 +15,8 @@ class Row
 
     /** @var string */
     protected $editing_instructions;
+    protected $viewing_instructions;
+    protected $edit_view_description;
 
     protected $description;
     protected $notes;
@@ -36,6 +38,8 @@ class Row
 
         $this->title = $row_schema['title'] ?? '';
         $this->editing_instructions = $row_schema['editing_instructions'] ?? '';
+        $this->viewing_instructions = $row_schema['viewing_instructions'] ?? '';
+        $this->edit_view_description = $row_schema['edit_view_description'] ?? '';
         $this->description = $row_schema['description'] ?? '';
         $this->notes = $row_schema['notes'] ?? '';
         $this->columns = $row_schema['columns'] ?? null;
@@ -84,6 +88,15 @@ class Row
         if ($this->editing_instructions && !$formBuilder->isReadOnly()) {
             $html .= MarkerUpper::wrapInTag($this->editing_instructions, 'p');
         }
+
+        if ($this->viewing_instructions && $formBuilder->isReadOnly()) {
+            $html .= MarkerUpper::wrapInTag($this->viewing_instructions, 'p');
+        }
+
+        if ($this->edit_view_description) {
+            $html .= MarkerUpper::wrapInTag($this->edit_view_description, 'p');
+        }
+
 
         if ($this->description) {
             $html .= MarkerUpper::wrapInTag($this->description, 'p');

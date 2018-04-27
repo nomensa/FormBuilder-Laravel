@@ -15,12 +15,15 @@ class RowGroup
     /** @var array - Can contain both Rows and RowGroups */
     public $rows = [];
 
+
     /**
      * RowGroup constructor.
      *
      * @param array $rows
      * @param $name
      * @param bool $cloneable
+     *
+     * @throws \Nomensa\FormBuilder\Exceptions\InvalidSchemaException
      */
     public function __construct(array $rows, $name, bool $cloneable = false)
     {
@@ -54,7 +57,7 @@ class RowGroup
     /**
      * Calls markupClone the required number of times (mostly just once)
      *
-     * @param \Nomensa\FormBuilder\FormBuilder $form
+     * @param \Nomensa\FormBuilder\FormBuilder $formBuilder
      *
      * @return string HTML markup
      */
