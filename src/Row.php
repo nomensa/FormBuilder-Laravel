@@ -109,7 +109,7 @@ class Row
         }
 
         if ($this->notes) {
-            $html .= $this->wrapInRowTags($this->notes);
+            $html .= MarkerUpper::wrapInTag($this->notes,'div');
         }
 
         return $html;
