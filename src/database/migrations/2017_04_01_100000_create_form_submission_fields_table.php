@@ -22,7 +22,7 @@ class CreateFormSubmissionFieldsTable extends Migration
             $table->string('field_name', 100);
 
             // Different types of value
-            $table->string('value')->nullable();
+            $table->text('value')->nullable();
             $table->integer('value_int')->nullable();
             $table->date('value_date')->nullable();
 
