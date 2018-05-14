@@ -112,6 +112,9 @@ trait MarkerUpper
                     $error = str_replace('Unit', '<strong>Unit</strong>', $error);
                 }
 
+                // capitalize first letter of error
+                $error = ucfirst($error);
+
                 $output .= "<p  class=\"flash alert-danger\"><a href=\"#" . $errorAnchorName . "\">" . $error . "</a></p>";
 
             }
