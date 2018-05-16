@@ -98,7 +98,7 @@ class Row
         }
 
 
-        if ($this->description) {
+        if ($this->description && $rowHasVisibleContent) {
             $html .= MarkerUpper::wrapInTag($this->description, 'p');
         }
 
@@ -108,7 +108,7 @@ class Row
             $html .= $colsMarkup;
         }
 
-        if ($this->notes) {
+        if ($this->notes && $rowHasVisibleContent) {
             $html .= MarkerUpper::wrapInTag($this->notes,'div');
         }
 
