@@ -285,9 +285,21 @@ class Column
 
             case "date":
 
-                $this->dataAttributes['mindate'] = $formBuilder->ruleExists($this->fieldName, 'date_is_in_the_past') ? '-5y' : 0;
-                $this->dataAttributes['maxdate'] = $formBuilder->ruleExists($this->fieldName, 'date_is_in_the_future') ? '+5y' : 0;
+                $this->dataAttributes['mindate'] = 0;
+                $this->dataAttributes['maxdate'] = 0;
 
+                if($formBuilder->ruleExists($this->fieldName, 'date_is_in_the_past')){
+                    $this->dataAttributes['mindate'] =  '-5y';
+                }
+
+                if($formBuilder->ruleExists($this->fieldName, 'date_is_in_the_future')){
+                    $this->dataAttributes['maxdate'] =  '+5y';
+                }
+
+                if($formBuilder->ruleExists($this->fieldName, 'date_is_within_the_last_month')){
+                    $this->dataAttributes['mindate'] =  '-1m';
+                }
+                
                 $rule = $formBuilder->ruleExists($this->fieldName, 'before');
                 if ($rule && $rule == "before:today") {
                     $this->dataAttributes['mindate'] = '-5y';
