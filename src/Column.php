@@ -249,7 +249,7 @@ class Column
                 }
                 $output .= '<div class="' . $this->classBundle . '">';
                 $output .= '<div class="section-readonly">';
-                $output .= MarkerUpper::wrapInTag($this->label . $this->type, "h4");
+                $output .= MarkerUpper::wrapInTag($this->label, "h4");
                 $origID = $attributes['id'];
 
                 if (is_array($values)) {
