@@ -15,33 +15,47 @@ use Nomensa\FormBuilder\Exceptions\InvalidSchemaException;
 
 class Column
 {
+
     const MULTI_OPTION_TYPES = ['checkboxes', 'radios'];
 
     const WITH_LABEL = true;
 
     /** @var string */
     public $field = '';
+
     public $label = '';
+
     public $type = 'text';
+
     public $stateSpecificType = '';
 
     private $default_value;
 
     public $fieldName;
+
     public $id;
+
     public $value;
 
     /** @var bool */
     public $cloneable = false;
 
     public $row_name;
+
     public $parentTitle;
+
     public $disabled;
+
     public $helptext;
+
     public $helptextIfPreviouslySaved;
+
     public $prefix;
+
     public $errors;
+
     public $fieldNameWithBrackets;
+
     public $toolbar;
 
     /** @var array of HTML tag attributes */
@@ -52,7 +66,6 @@ class Column
 
     public $displayMode;
 
-
     /** @var array */
     public $classes;
 
@@ -62,10 +75,13 @@ class Column
     /** @var array Values in a select box */
     public $options = [];
 
+    /** @var array Values for option-table */
+    public $columnHeadings = [];
+    
     /** @var array of HTML data attributes keyed by name (without "data-" prefix) */
     public $dataAttributes = [];
 
-    
+
     /**
      * Column constructor.
      *
@@ -128,25 +144,30 @@ class Column
         $this->id = MarkerUpper::HTMLIDFriendly($this->fieldName);
 
 
-
         if (!isSet($column_schema['options'])) {
             // Do nothing
 
-        } else if (is_array($column_schema['options'])) {
-            if (!$this->hasStringKeys($column_schema['options'])) {
-                $column_schema['options'] = $this->slugKeyArray($column_schema['options'], ($this->type == 'radios') );
+        } else {
+            if (is_array($column_schema['options'])) {
+                if (!$this->hasStringKeys($column_schema['options'])) {
+                    $column_schema['options'] = $this->slugKeyArray($column_schema['options'], ($this->type == 'radios'));
+                }
+                $this->options = $column_schema['options'];
             }
-            $this->options = $column_schema['options'];
         }
+
+        $this->columnHeadings = $column_schema['column-headings'] ?? null;
     }
+
 
     /**
      * Temporary poly-fill until schemas only contain key-pair values
      *
      * @param array $array
+     *
      * @return bool
      */
-    function hasStringKeys(array $array) : bool
+    function hasStringKeys(array $array): bool
     {
         return count(array_filter(array_keys($array), 'is_string')) > 0;
     }
@@ -170,6 +191,7 @@ class Column
 
     /**
      * Returns an array containing only the column parameters required by LaravelCollective Form/Field
+     *
      * @var $withLabel
      *
      * @return array
@@ -179,7 +201,7 @@ class Column
         $simpleColumn = [
             'id' => $this->id,
             'disabled' => $this->disabled,
-            'label' => false
+            'label' => false,
         ];
 
         if ($withLabel === Column::WITH_LABEL) {
@@ -238,7 +260,7 @@ class Column
                 foreach ($this->options as $key => $option) {
                     $attributes['label'] = $option;
                     $attributes['id'] = $origID . '_' . $key;
-                    $output .= Field::checkbox($this->fieldNameWithBrackets . '[]', $key, in_array($key,$values), $attributes);
+                    $output .= Field::checkbox($this->fieldNameWithBrackets . '[]', $key, in_array($key, $values), $attributes);
                 }
                 return $output;
                 break;
@@ -248,7 +270,7 @@ class Column
                 $attributes = $this->asFormArray(Column::WITH_LABEL);
 
                 $values = json_decode($this->value, true);
-                if ($values===null) {
+                if ($values === null) {
                     return '';
                 }
                 $output .= '<div class="' . $this->classBundle . '">';
@@ -282,6 +304,44 @@ class Column
                 return Form::{$this->type}($this->fieldNameWithBrackets, $this->options, $this->value, $this->asFormArray());
                 break;
 
+            case "option-table":
+                // define table headers from first row
+                $headers = $this->columnHeadings;
+
+                $output = '<table class="table table-active table-hide-fooicon" data-expand-all="true" data-toggle-column="last">';
+                $output .= '<thead>';
+
+                $output .= '<tr>';
+                $output .= '<th></th>';
+
+                foreach ($headers as $header => $value) {
+                    $output .= "<th>$value</th>";
+                }
+
+                $output .= '</tr>';
+                $output .= '</thead>';
+                $output .= '<tbody>';
+
+                foreach ($this->options as $value => $cells) {
+
+                    $selected = $this->value == $value ? true : false;
+
+                    $output .= '<tr>';
+
+                    $output .= "<td>" . Form::radio($this->fieldNameWithBrackets, $value, $selected, ['id' => $this->fieldNameWithBrackets.'_'.$value]) . "</td>";
+
+                    foreach ($cells as $cell) {
+                        $output .= "<td>".Form::label($this->fieldNameWithBrackets.'_'.$value,$cell)."</td>";
+                    };
+
+                    $output .= '</tr>';
+                }
+
+                $output .= '</tbody>';
+                $output .= '</table>';
+
+                break;
+
             case "file":
 
                 return Field::file($this->fieldNameWithBrackets, $this->asFormArray());
@@ -292,20 +352,19 @@ class Column
                 $this->dataAttributes['mindate'] = 0;
                 $this->dataAttributes['maxdate'] = 0;
 
-
                 if($formBuilder->ruleExists($this->fieldName, 'date_is_in_the_past')){
                     $this->dataAttributes['mindate'] =  '-5y';
                 }
 
-                if($formBuilder->ruleExists($this->fieldName, 'date_is_in_the_future')){
-                    $this->dataAttributes['maxdate'] =  '+5y';
+                if ($formBuilder->ruleExists($this->fieldName, 'date_is_in_the_future')) {
+                    $this->dataAttributes['maxdate'] = '+5y';
                 }
 
 
                 if($formBuilder->ruleExists($this->fieldName, 'date_is_within_the_last_month')){
                     $this->dataAttributes['mindate'] =  '-1m';
                 }
-                
+
                 $rule = $formBuilder->ruleExists($this->fieldName, 'before');
                 if ($rule && $rule == "before:today") {
                     $this->dataAttributes['mindate'] = '-5y';
@@ -326,7 +385,7 @@ class Column
 
             case "date-readonly":  /* Render text into the form and add a hidden field */
 
-                if(!empty($this->value)) {
+                if (!empty($this->value)) {
 
                     $output .= '<div class="' . $this->classBundle . '">';
                     $output .= '<div class="section-readonly">';
@@ -335,7 +394,7 @@ class Column
                     $output .= '</div>' . PHP_EOL . '<!-- /.section-readonly -->' . PHP_EOL;
                     $output .= '</div>' . PHP_EOL;
                     $output .= Field::hidden($this->fieldNameWithBrackets,
-                      $this->value->format('Y-m-d'), $this->asFormArray());
+                        $this->value->format('Y-m-d'), $this->asFormArray());
                 }
 
                 break;
@@ -352,7 +411,7 @@ class Column
                     }
 
                     $output .= MarkerUpper::wrapInTag($this->label, "h4");
-                    $output .= MarkerUpper::wrapInTag($this->options[$this->value],'p');
+                    $output .= MarkerUpper::wrapInTag($this->options[$this->value], 'p');
                     $output .= '</div>' . PHP_EOL . '<!-- /.section-readonly -->' . PHP_EOL;
                     $output .= '</div>' . PHP_EOL;
                     $output .= Field::hidden($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
@@ -367,13 +426,57 @@ class Column
                     $output .= '<div class="' . $this->classBundle . '">';
                     $output .= '<div class="section-readonly">';
                     $output .= MarkerUpper::wrapInTag($this->label, "h4");
-                    $output .= MarkerUpper::wrapInTag($this->value,'p');
+                    $output .= MarkerUpper::wrapInTag($this->value, 'p');
                     $output .= '</div>' . PHP_EOL . '<!-- /.section-readonly -->' . PHP_EOL;
                     $output .= Field::hidden($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
                     $output .= '</div>' . PHP_EOL;
 
                 }
                 break;
+
+            case "option-table-readonly":
+                // define table headers from first row
+                $headers = $this->columnHeadings;
+
+                $output .= '<div class="' . $this->classBundle . '">';
+                $output .= '<div class="section-readonly">';
+
+                $output .= '<table class="table table-active table-hide-fooicon" data-expand-all="true" data-toggle-column="last">';
+                $output .= '<thead>';
+
+                $output .= '<tr>';
+
+                foreach ($headers as $header => $value) {
+                    $output .= "<th>$value</th>";
+                }
+
+                $output .= '</tr>';
+                $output .= '</thead>';
+                $output .= '<tbody>';
+
+                foreach ($this->options as $value => $cells) {
+
+                    // only display the selected row
+                    if ($this->value == $value) {
+                        $output .= '<tr>';
+
+                        foreach ($cells as $cell) {
+                            $output .= "<td>" . $cell . "</td>";
+                        };
+
+                        $output .= '</tr>';
+                    }
+                }
+
+                $output .= '</tbody>';
+                $output .= '</table>';
+
+                $output .= '</div>' . PHP_EOL . '<!-- /.section-readonly -->' . PHP_EOL;
+                $output .= '</div>' . PHP_EOL;
+                $output .= Field::hidden($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
+
+                break;
+
 
             case "search":
 
@@ -391,8 +494,6 @@ class Column
     }
 
 
-
-
     /**
      * @param \Nomensa\FormBuilder\FormBuilder $formBuilder
      * @param int $totalCols
@@ -400,7 +501,7 @@ class Column
      *
      * @return \Nomensa\FormBuilder\MarkUp
      */
-    public function markup(FormBuilder $formBuilder, $totalCols, $group_index) : MarkUp
+    public function markup(FormBuilder $formBuilder, $totalCols, $group_index): MarkUp
     {
         $this->classBundle = CSSClassFactory::colClassBundle($totalCols);
         $this->classBundle->add($this->classes);
@@ -414,7 +515,7 @@ class Column
 
         $this->value = $formBuilder->getFieldValue($this->row_name, $group_index, $this->field);
 
-        if($this->value && !empty($this->helptextIfPreviouslySaved)) {
+        if ($this->value && !empty($this->helptextIfPreviouslySaved)) {
             $this->helptext = $this->helptextIfPreviouslySaved;
         }
 
@@ -428,14 +529,14 @@ class Column
         }
 
         /** check if variable exists in viewData and set state as editable if it does and is true */
-        if (preg_match('/^editable_if_true_else_ignore:(.*)$/',$state,$matches)) {
+        if (preg_match('/^editable_if_true_else_ignore:(.*)$/', $state, $matches)) {
             $keyName = $matches[1];
 
             $state = ($formBuilder->viewData[$keyName] == true) ? 'editable' : 'ignore';
         }
 
         /** check if variable exists in viewData and set state as editable if it does and is true */
-        if (preg_match('/^editable_if_true_else_readonly:(.*)$/',$state,$matches)) {
+        if (preg_match('/^editable_if_true_else_readonly:(.*)$/', $state, $matches)) {
             $keyName = $matches[1];
 
             $state = ($formBuilder->viewData[$keyName] == true) ? 'editable' : 'readonly';
@@ -446,8 +547,7 @@ class Column
         if ($state == 'readonly_for_owner' && $formBuilder->owner->id == Auth::user()->id ||
             $state == 'editable_for_owner' && $formBuilder->owner->id != Auth::user()->id ||
             $state != 'hidden' && $this->displayMode == 'readonly' ||
-            $state == 'readonly')
-        {
+            $state == 'readonly') {
             $state = 'readonly';
             $this->stateSpecificType = $this->type . '-' . $state;
         }
@@ -462,7 +562,6 @@ class Column
 
 
         $optional = $formBuilder->ruleExists($this->fieldName, 'nullable') ? '<span class="optional"> ' . __('validation.optional_field') . '</span>' : null;
-
 
         $inlineErrors = $formBuilder->getInlineFieldError($this->fieldName);
 
@@ -479,7 +578,7 @@ class Column
 
             $output .= '<div class="' . $this->classBundle . '">';
             if (isset($this->prefix)) {
-                $output .= MarkerUpper::wrapInTag($this->prefix, 'div', ['id'=>$this->id]);
+                $output .= MarkerUpper::wrapInTag($this->prefix, 'div', ['id' => $this->id]);
             }
 
             if (in_array($this->type, $this::MULTI_OPTION_TYPES)) {
@@ -560,8 +659,8 @@ class Column
 
         if ($this->default_value === 'INCREMENTS_FOR_USER') {
             $maxVal = $formBuilder->owner->formSubmissionFields
-                ->where('row_name',$this->row_name)
-                ->where('field_name',$this->field)
+                ->where('row_name', $this->row_name)
+                ->where('field_name', $this->field)
                 ->max('value');
 
             return (int)$maxVal + 1;
