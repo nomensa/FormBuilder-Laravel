@@ -148,8 +148,13 @@ trait FieldMapping
         return $fields;
     }
 
+
     /**
      * Returns the validation rules for this state
+     *
+     * @param $state_id
+     *
+     * @return array
      */
     public function getStateRules($state_id)
     {
@@ -169,8 +174,11 @@ trait FieldMapping
         return $rules;
     }
 
+
     /**
      * Returns the validateable textareas for this state
+     *
+     * @return array
      */
     public function getEditableTextAreas()
     {

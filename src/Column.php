@@ -65,11 +65,14 @@ class Column
     /** @var array of HTML data attributes keyed by name (without "data-" prefix) */
     public $dataAttributes = [];
 
+    
     /**
      * Column constructor.
      *
      * @param array $column_schema
      * @param bool $cloneable
+     *
+     * @throws \Nomensa\FormBuilder\Exceptions\InvalidSchemaException
      */
     public function __construct(array $column_schema, bool $cloneable)
     {
@@ -195,9 +198,10 @@ class Column
 
 
     /**
-     * @param FormBuilder $formBuilder
+     * @param \Nomensa\FormBuilder\FormBuilder $formBuilder
+     * @param $group_index
      *
-     * @return \Illuminate\Support\HtmlString|string
+     * @return string
      */
     private function markupField(FormBuilder $formBuilder, $group_index)
     {
@@ -288,6 +292,7 @@ class Column
                 $this->dataAttributes['mindate'] = 0;
                 $this->dataAttributes['maxdate'] = 0;
 
+
                 if($formBuilder->ruleExists($this->fieldName, 'date_is_in_the_past')){
                     $this->dataAttributes['mindate'] =  '-5y';
                 }
@@ -295,6 +300,7 @@ class Column
                 if($formBuilder->ruleExists($this->fieldName, 'date_is_in_the_future')){
                     $this->dataAttributes['maxdate'] =  '+5y';
                 }
+
 
                 if($formBuilder->ruleExists($this->fieldName, 'date_is_within_the_last_month')){
                     $this->dataAttributes['mindate'] =  '-1m';

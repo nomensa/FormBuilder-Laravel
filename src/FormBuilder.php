@@ -16,8 +16,11 @@ class FormBuilder
     /** @var array of Instances of FormBuilder\Component */
     public $components = [];
 
-    /** @var Group of rules for how fields are displayed */
+    /** @var - Group of rules for how fields are displayed */
     public $ruleGroups;
+
+    /** @var - mapping state_id to ruleGroup */
+    public $stateRuleGroups;
 
     /** @var \App\FormInstance $formInstance */
     public $formInstance;
@@ -56,8 +59,10 @@ class FormBuilder
         }
 
         // build up rule groups by cascading through options->rules;
-        $this->ruleGroups = $this->cascadeRuleGroups((array)$options->rules);
+        $this->ruleGroups = $this->cascadeRuleGroups((array) $options->rules);
 
+        // get optional map of state_ids to ruleGroups
+        $this->stateRuleGroups = isset($options->stateRuleGroups) ? (array) $options->stateRuleGroups : null;
     }
 
 
@@ -90,7 +95,6 @@ class FormBuilder
         }
 
         return $ruleGroups;
-
     }
 
 
@@ -132,6 +136,14 @@ class FormBuilder
     private function getRuleGroupKey()
     {
         $ruleGroupKey = 'default';
+
+        // check state id
+        $stateId = 'state-'.$this->state_id;
+
+        // if state_id exists in stateRuleGroups then use that one
+        if(isset($this->stateRuleGroups[$stateId])){
+            $ruleGroupKey = $this->stateRuleGroups[$stateId];
+        }
 
         if (!$this->formInstance) {
             return $ruleGroupKey;
