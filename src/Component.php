@@ -9,6 +9,9 @@ class Component
     /** @var string */
     public $type;
 
+    /** @var mixed|null  */
+    public $componentData;
+
     /** @var Instance of \Nomensa\FormBuilder\RowGroup */
     public $rowGroup;
 
@@ -32,6 +35,9 @@ class Component
         if (isSet($component_schema['field-mappings'])) {
             $this->fieldMappings = $component_schema['field-mappings'];
         }
+
+        $this->componentData = $component_schema['componentData'] ?? null;
+
     }
 
     /**
@@ -45,12 +51,13 @@ class Component
             return $this->rowGroup->markup($formBuilder);
         } else {
             $data = array_merge( [
-                'formBuilder' => $formBuilder
+                'formBuilder' => $formBuilder,
+                'componentData' => $this->componentData
             ], $formBuilder->viewData );
+
             $view = View::make('components.formbuilder.' . $this->type, $data);
             return $view->render();
         }
-
     }
 
 
