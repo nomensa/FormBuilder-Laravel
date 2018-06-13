@@ -85,7 +85,7 @@ class Row
             $html .= MarkerUpper::wrapInTag($this->title, 'h2', ['class' => 'heading']);
         }
 
-        if ($this->editing_instructions && !$formBuilder->isReadOnly()) {
+        if ($this->editing_instructions && !$formBuilder->isReadOnly() && $rowHasVisibleContent) {
             $html .= MarkerUpper::wrapInTag($this->editing_instructions, 'p');
         }
 
