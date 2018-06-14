@@ -36,9 +36,8 @@ class CreateEntryFormsTable extends Migration
             $table->text('options')->nullable();
             $table->integer('allow_multiple_submissions')->default(0)->nullable();
 
-            $table->integer('public')->default(1);
             $table->integer('weight')->default(0)->nullable();
-            $table->integer('live')->unsigned()->nullable();
+            $table->boolean('live')->default(0);
 
             $table->integer('form_child_id')->nullable();
             $table->boolean('has_supporting_documents')->default(1)->nullable();

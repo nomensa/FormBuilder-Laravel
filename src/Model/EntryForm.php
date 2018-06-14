@@ -60,4 +60,16 @@ class EntryForm extends Model
         return $this->hasOne('App\EntryForm','id','form_child_id');
     }
 
+
+    public function scopeLive($query)
+    {
+        return $query->where('live',1);
+    }
+
+
+    public function scopeNotLive($query)
+    {
+        return $query->where('live',0);
+    }
+
 }
