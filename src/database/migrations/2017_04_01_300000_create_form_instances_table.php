@@ -16,16 +16,10 @@ class CreateFormInstancesTable extends Migration
     {
         Schema::create($this->table, function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('entry_form_id');
+
+            $table->integer('form_version_id')->unsigned();
+
             $table->integer('form_instance_parent_id')->nullable();
-
-            $table->string('title');
-
-            // TODO Move these 3 fields to a new table called form_versions
-            //$table->string('schema_hash', 32); // MD5 hash of the JSON schema
-            $table->text('schema')->nullable();
-            $table->text('options')->nullable();
-
             $table->integer('status')->default(0);
             $table->integer('state_id')->default(1);
             $table->integer('user_id')->nullable();
@@ -36,6 +30,10 @@ class CreateFormInstancesTable extends Migration
             $table->boolean('has_supporting_documents')->default(1)->nullable();
             $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('form_version_id')
+                ->references('id')
+                ->on('form_versions');
         });
     }
 

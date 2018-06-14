@@ -17,13 +17,31 @@ class FormInstance extends Model
 
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function formVersion()
+    {
+        return $this->belongsTo('App\FormVersion');
+    }
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function entryForm()
+    {
+        return $this->formVersion->entryForm();
+    }
+
+
+    /**
      * Load Default schema if the field isnt present in the db
      *
      * @param $assoc bool
      *
      * @return array
      *
-     * @throws InvalidSchemaException
+     * @throws \Nomensa\FormBuilder\Exceptions\InvalidSchemaException
      */
     public function getSchema($assoc=true) : array
     {

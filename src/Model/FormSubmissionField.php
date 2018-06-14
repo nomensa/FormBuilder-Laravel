@@ -37,6 +37,7 @@ class FormSubmissionField extends Model
         return self::FilterEntryFormSubmissionsByFieldValue($field_name,$operator,$value, $form_submission_ids, true);
     }
 
+
     /**
      * Get array of IDs of EntryFormSubmissions based on values
      *
@@ -60,7 +61,7 @@ class FormSubmissionField extends Model
         if ($use_value_date) {
             $query->where('value_date', $operator, $value);
         } else if (preg_match('/^[0-9]+$/', $value)) {
-                $query->where('value_int', $operator, $value);
+            $query->where('value_int', $operator, $value);
         } else {
             $query->where('value', $operator, $value);
         }
@@ -69,6 +70,7 @@ class FormSubmissionField extends Model
 
         return $query->get()->pluck('form_submission_id')->toArray();
     }
+
 
     /**
      * Filter Rows by formInstanceId
