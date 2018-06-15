@@ -4,6 +4,7 @@ namespace Nomensa\FormBuilder\Commands;
 
 use Illuminate\Console\Command;
 use App\EntryForm;
+use App\FormVersion;
 use Illuminate\Support\Facades\File;
 
 class MakeFormCommand extends Command
@@ -76,8 +77,7 @@ class MakeFormCommand extends Command
 
         // OPTIONS FILE
 
-        $optionsJSON = '{' . PHP_EOL . '  "rules": {' . PHP_EOL . '    "draft": {},' . PHP_EOL .
-            '    "default": {' . PHP_EOL . '    }' . PHP_EOL . '  }' . PHP_EOL . '}';
+        $optionsJSON = FormVersion::BASIC_OPTIONS_JSON;
 
         // TODO Grab the options file name from app/Form incase developer has overridden filename
         $this->makeFile($folder, 'options.json', $optionsJSON);
@@ -85,7 +85,7 @@ class MakeFormCommand extends Command
 
         // SCHEMA FILE
 
-        $schemaJSON = '[' . PHP_EOL . '  {' . PHP_EOL . '    "type": "dynamic",' . PHP_EOL . '    "rows": [' . PHP_EOL . '    ]' . PHP_EOL . '  }' . PHP_EOL . ']' . PHP_EOL;
+        $schemaJSON = FormVersion::BASIC_SCHEMA_JSON;
 
         // TODO Grab the schema file name from app/Form incase developer has overridden filename
         $this->makeFile($folder, 'schema.json', $schemaJSON);

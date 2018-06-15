@@ -50,7 +50,7 @@ class FormBuilder
     public $render;
 
 
-    public function __construct(array $form_schema, $options)
+    public function __construct(array $form_schema, array $options)
     {
         $this->components = $form_schema;
 
@@ -59,7 +59,7 @@ class FormBuilder
         }
 
         // build up rule groups by cascading through options->rules;
-        $this->ruleGroups = $this->cascadeRuleGroups((array) $options->rules);
+        $this->ruleGroups = $this->cascadeRuleGroups($options['rules']);
 
         // get optional map of state_ids to ruleGroups
         $this->stateRuleGroups = isset($options->stateRuleGroups) ? (array) $options->stateRuleGroups : null;

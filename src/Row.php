@@ -11,7 +11,7 @@ class Row
     public $cloneable = false;
 
     /** @var string */
-    protected $title;
+    public $title;
 
     /** @var string */
     protected $editing_instructions;
