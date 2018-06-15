@@ -22,7 +22,7 @@ class CreateFormVersionsTable extends Migration
             $table->boolean('is_current');
 
             $table->string('version'); // Something like '1.3'
-            $table->string('hash', 32); // MD5 hash of the JSON schema + options
+            $table->string('hash', 32)->nullable(); // MD5 hash of the JSON schema + options
             $table->json('schema')->nullable(); // JSON schema
             $table->json('options')->nullable(); // JSON options
 

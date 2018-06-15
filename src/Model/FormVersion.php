@@ -3,6 +3,7 @@
 namespace Nomensa\FormBuilder\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class FormVersion extends Model
 {
@@ -22,6 +23,18 @@ class FormVersion extends Model
     public function formInstances()
     {
         return $this->hasMany('App\FormInstance');
+    }
+
+
+    /**
+     * @return int
+     */
+    public function formSubmissionCount() : int
+    {
+        return DB::table('form_submissions')
+            ->leftJoin('form_instances','form_instance_id','=','form_instances.id')
+            ->where('form_version_id',$this->id)
+            ->count();
     }
 
 
