@@ -41,11 +41,16 @@ class FormVersion extends Model
         $attributes = [
             'entry_form_id' => $entryForm->id,
             'is_current' => false,
-            'version' => 1,
-            'schema' => self::BASIC_SCHEMA_JSON,
-            'options' => self::BASIC_OPTIONS_JSON,
+            'version_number' => 1,
         ];
-        return self::create($attributes);
+
+        $formVersion = self::create($attributes);
+
+        $formVersion->setSchema(self::BASIC_SCHEMA_JSON);
+        $formVersion->setOptions(self::BASIC_OPTIONS_JSON);
+        $formVersion->save();
+
+        return $formVersion;
     }
 
 
@@ -95,6 +100,7 @@ class FormVersion extends Model
         }
         $this->schema = $schema;
         $this->regenerateHash();
+        return $this;
     }
 
 
@@ -105,6 +111,7 @@ class FormVersion extends Model
         }
         $this->options = $options;
         $this->regenerateHash();
+        return $this;
     }
 
 

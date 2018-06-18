@@ -31,7 +31,8 @@ class CreateFormVersionsTable extends Migration
 
             $table->foreign('entry_form_id')
                 ->references('id')
-                ->on('entry_forms');
+                ->on('entry_forms')
+                ->onDelete('cascade');
         });
     }
 
