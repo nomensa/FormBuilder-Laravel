@@ -29,6 +29,8 @@ class FormVersion extends Model
     protected $options_filename = 'options.json';
     protected $schema_filename = 'schema.json';
 
+    private $formSubmissionCount;
+
     /**
      * @param EntryForm $entryForm
      *
@@ -70,7 +72,10 @@ class FormVersion extends Model
      */
     public function formSubmissionCount() : int
     {
-        return DB::table('form_submissions')
+        if (!is_null($this->formSubmissionCount)) {
+            return $this->formSubmissionCount;
+        }
+        return $this->formSubmissionCount = DB::table('form_submissions')
             ->leftJoin('form_instances','form_instance_id','=','form_instances.id')
             ->where('form_version_id',$this->id)
             ->count();
@@ -79,7 +84,33 @@ class FormVersion extends Model
 
     public function getVersionNameAttribute() : string
     {
-        return 'v' . $this->version;
+        return 'v' . $this->version_number;
+    }
+
+
+    public function setSchema($schema)
+    {
+        if (is_array($schema)) {
+            $schema = json_encode($schema);
+        }
+        $this->schema = $schema;
+        $this->regenerateHash();
+    }
+
+
+    public function setOptions($options)
+    {
+        if (is_array($options)) {
+            $options = json_encode($options);
+        }
+        $this->options = $options;
+        $this->regenerateHash();
+    }
+
+
+    protected function regenerateHash()
+    {
+        $this->hash = md5($this->schema . $this->options);
     }
 
 
@@ -109,11 +140,7 @@ class FormVersion extends Model
 
     public function getSchema() : array
     {
-        if ($this->file_defined) {
-            $output = $this->getSchemaFromFile();
-        } else {
-            $output = $this->schema;
-        }
+        $output = $this->getRawSchema();
 
         $strSchema = $this->modifySchema($output);
 
@@ -124,6 +151,16 @@ class FormVersion extends Model
         }
 
         return $schema;
+    }
+
+
+    public function getRawSchema() : string
+    {
+        if ($this->file_defined) {
+            return $this->getSchemaFromFile();
+        } else {
+            return $this->schema;
+        }
     }
 
 
@@ -146,11 +183,7 @@ class FormVersion extends Model
      */
     public function getOptions() : array
     {
-        if ($this->file_defined) {
-            $output = $this->getOptionsFromFile();
-        } else {
-            $output = $this->options;
-        }
+        $output = $this->getRawOptions();
 
         $options = json_decode($output, true);
 
@@ -159,6 +192,16 @@ class FormVersion extends Model
         }
 
         return $options;
+    }
+
+
+    public function getRawOptions() : string
+    {
+        if ($this->file_defined) {
+            return $this->getOptionsFromFile();
+        } else {
+            return $this->options;
+        }
     }
 
 

@@ -13,6 +13,9 @@ class Row
     /** @var string */
     public $title;
 
+    /** @var @var string */
+    public $name;
+
     /** @var string */
     protected $editing_instructions;
     protected $viewing_instructions;
@@ -37,6 +40,7 @@ class Row
         $this->cloneable = $cloneable;
 
         $this->title = $row_schema['title'] ?? '';
+        $this->name = $row_schema['row_name'] ?? '';
         $this->editing_instructions = $row_schema['editing_instructions'] ?? '';
         $this->viewing_instructions = $row_schema['viewing_instructions'] ?? '';
         $this->edit_view_description = $row_schema['edit_view_description'] ?? '';
