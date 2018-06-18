@@ -10,7 +10,7 @@ class BootstrapCSSClassFactory implements CSSClassFactoryInterface
      */
     public static function rowClassBundle()
     {
-        return new ClassBundle('row');
+        return new ClassBundle('row form-item-row');
     }
 
     /**
