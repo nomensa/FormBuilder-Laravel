@@ -33,7 +33,6 @@ class CreateEntryFormsTable extends Migration
             $table->string('source')->nullable();
             
             $table->integer('status')->default(1);
-            $table->text('options')->nullable();
             $table->integer('allow_multiple_submissions')->default(0)->nullable();
 
             $table->integer('weight')->default(0)->nullable();
