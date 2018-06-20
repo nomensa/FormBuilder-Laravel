@@ -38,7 +38,6 @@ class CreateEntryFormsTable extends Migration
             $table->boolean('live')->default(0);
 
             $table->integer('form_child_id')->nullable();
-            $table->boolean('has_supporting_documents')->default(1)->nullable();
 
             $table->timestamps();
 

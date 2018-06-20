@@ -27,8 +27,6 @@ class CreateFormInstancesTable extends Migration
             $table->boolean('started_by_assessor')->default(0);
             $table->integer('allow_multiple_submissions')->default(0)->nullable();
 
-            $table->boolean('has_supporting_documents')->default(1)->nullable();
-            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('form_version_id')
