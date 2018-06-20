@@ -31,6 +31,19 @@ class EntryForm extends Model
     }
 
 
+    public function setCurrentFormVersion(FormVersion $formVersion)
+    {
+        if ($formVersion->entry_form_id != $this->id) {
+            throw new \Exception('FormVersion must belong to EntryForm');
+        }
+
+        // Set all other FormVersions to not current
+        $this->formVersions()->where('id','<>',$formVersion->id)->update(['is_current'=>false]);
+
+        return $formVersion->update(['is_current'=>true]);
+    }
+
+
     public function formInstances()
     {
         return $this->hasManyThrough('App\FormInstance','App\FormVersion');
