@@ -29,6 +29,7 @@ class FormVersion extends Model
     protected $options_filename = 'options.json';
     protected $schema_filename = 'schema.json';
 
+    private $formInstanceCount;
     private $formSubmissionCount;
 
     /**
@@ -69,6 +70,20 @@ class FormVersion extends Model
     public function formInstances()
     {
         return $this->hasMany('App\FormInstance');
+    }
+
+
+    /**
+     * @return int
+     */
+    public function formInstanceCount() : int
+    {
+        if (!is_null($this->formInstanceCount)) {
+            return $this->formInstanceCount;
+        }
+        return $this->formInstanceCount = DB::table('form_instances')
+            ->where('form_version_id',$this->id)
+            ->count();
     }
 
 
