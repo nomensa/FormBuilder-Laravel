@@ -32,7 +32,7 @@ class FormBuilderTest extends TestCase {
              }]';
         $schema = json_decode($jsonSchema, true);
 
-        $options = json_decode('{}', false);
+        $options = json_decode('{}', true);
 
         new FormBuilder($schema, $options);
     }
@@ -57,7 +57,7 @@ class FormBuilderTest extends TestCase {
              }]';
         $schema = json_decode($jsonSchema, true);
 
-        $options = json_decode('{}', false);
+        $options = json_decode('{}', true);
 
         new FormBuilder($schema, $options);
     }
@@ -83,7 +83,7 @@ class FormBuilderTest extends TestCase {
              }]';
         $schema = json_decode($jsonSchema, true);
 
-        $options = json_decode('{}', false);
+        $options = json_decode('{}', true);
 
         new FormBuilder($schema, $options);
     }
@@ -133,7 +133,7 @@ class FormBuilderTest extends TestCase {
             }
         }';
 
-        $options = json_decode($jsonOptions, false);
+        $options = json_decode($jsonOptions, true);
 
         return new FormBuilder($schema, $options);
     }
@@ -141,13 +141,13 @@ class FormBuilderTest extends TestCase {
     public function testRuleExistsTrue1()
     {
         $formBuilder = $this->makeTestFormBuilder();
-        $this->assertTrue($formBuilder->ruleExists("field-1","nullable"));
+        $this->assertEquals("nullable",$formBuilder->ruleExists("field-1","nullable"));
     }
 
     public function testRuleExistsTrue2()
     {
         $formBuilder = $this->makeTestFormBuilder();
-        $this->assertTrue($formBuilder->ruleExists("field-3","required"));
+        $this->assertEquals("required",$formBuilder->ruleExists("field-3","required"));
     }
 
     public function testRuleExistsFalse1()

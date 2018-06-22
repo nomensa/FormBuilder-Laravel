@@ -65,12 +65,12 @@ class Component
      * @param string $row_name
      * @param string $field_name
      *
-     * @return null|array
+     * @return null|Column
      */
-    public function findFieldOptions($row_name, $field_name)
+    public function findField($row_name, $field_name)
     {
         if ($this->rowGroup) {
-            return $this->rowGroup->findFieldOptions($row_name, $field_name);
+            return $this->rowGroup->findField($row_name, $field_name);
         }
     }
 

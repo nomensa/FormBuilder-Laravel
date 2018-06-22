@@ -142,13 +142,13 @@ class Row
      * @param string $row_name
      * @param string $field_name
      *
-     * @return null|array
+     * @return null|Column
      */
-    public function findFieldOptions($row_name, $field_name)
+    public function findField($row_name, $field_name)
     {
         foreach ($this->columns as $column) {
             if ($column->row_name == $row_name && $column->field == $field_name) {
-                return $column->options;
+                return $column;
             }
         }
     }

@@ -251,7 +251,7 @@ class FormBuilder
 
 
     /**
-     * Gets options from schema
+     * Gets options for a single field from the form
      *
      * @param string $row_name
      * @param string $field_name
@@ -260,13 +260,31 @@ class FormBuilder
      */
     public function getFieldOptions($row_name, $field_name) : array
     {
-        foreach ($this->components as $component) {
-            $options = $component->findFieldOptions($row_name, $field_name);
-            if ($options) {
-                return $options;
-            }
+        $field = $this->getField($row_name, $field_name);
+        if ($field) {
+            return $field->options;
         }
         return [];
+    }
+
+
+    /**
+     * Gets a single field from the form
+     *
+     * @param string $row_name
+     * @param string $field_name
+     *
+     * @return null|Column
+     */
+    public function getField($row_name, $field_name)
+    {
+        foreach ($this->components as $component) {
+            $field = $component->findField($row_name, $field_name);
+            if ($field) {
+                return $field;
+            }
+        }
+        return null;
     }
 
 

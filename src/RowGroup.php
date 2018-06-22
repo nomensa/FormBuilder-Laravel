@@ -133,14 +133,14 @@ class RowGroup
      * @param string $row_name
      * @param string $field_name
      *
-     * @return null|array
+     * @return null|Column
      */
-    public function findFieldOptions($row_name, $field_name)
+    public function findField($row_name, $field_name)
     {
         foreach ($this->rows as $row) {
-            $options = $row->findFieldOptions($row_name, $field_name);
-            if ($options) {
-                return $options;
+            $field = $row->findField($row_name, $field_name);
+            if ($field) {
+                return $field;
             }
         }
     }
