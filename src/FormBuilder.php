@@ -62,7 +62,7 @@ class FormBuilder
         $this->ruleGroups = $this->cascadeRuleGroups($options['rules']);
 
         // get optional map of state_ids to ruleGroups
-        $this->stateRuleGroups = isset($options->stateRuleGroups) ? (array) $options->stateRuleGroups : null;
+        $this->stateRuleGroups = isset($options['stateRuleGroups']) ? (array) $options['stateRuleGroups'] : null;
     }
 
 
