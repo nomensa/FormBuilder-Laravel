@@ -37,6 +37,8 @@ class CreateEntryFormsTable extends Migration
             $table->integer('weight')->default(0)->nullable();
             $table->boolean('live')->default(0);
 
+            $table->boolean('versionable')->default(0);
+
             $table->integer('form_child_id')->nullable();
 
             $table->timestamps();
