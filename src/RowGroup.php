@@ -66,6 +66,12 @@ class RowGroup
         $html = '';
 
         if ($this->cloneable) {
+
+            // See if there are any values in the old request
+            $name = $formBuilder->getRowPrefix() . '.' . $this->name;
+            $requestVals = old($name);
+            $requestGroupCloneCount = count($requestVals);
+
             // Decide if we need to loop over multiple times
             $rowGroupValueCounts = $formBuilder->getRowGroupValueCount($this->name);
 
@@ -74,7 +80,7 @@ class RowGroup
 
             // We ALWAYS want at least 1 copy of a cloneable rowGroup, otherwise editing
             // a form attempting to add a group for the first time is impossible.
-            $iLimit = max(1,$rowGroupValueCounts);
+            $iLimit = max(1,$requestGroupCloneCount,$rowGroupValueCounts);
 
             for ($group_index = 0; $group_index < $iLimit; $group_index++) {
                 $html .= $this->markupClone($formBuilder, $group_index);
