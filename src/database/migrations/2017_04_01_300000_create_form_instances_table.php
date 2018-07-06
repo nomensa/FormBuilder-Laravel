@@ -32,6 +32,10 @@ class CreateFormInstancesTable extends Migration
             $table->foreign('form_version_id')
                 ->references('id')
                 ->on('form_versions');
+
+            $table->foreign('workflow_id')
+                ->references('id')
+                ->on('workflows');
         });
     }
 
