@@ -426,7 +426,7 @@ class Column
                     $output .= '<div class="' . $this->classBundle . '">';
                     $output .= '<div class="section-readonly">';
                     $output .= MarkerUpper::wrapInTag($this->label, "h4");
-                    $output .= MarkerUpper::wrapInTag($this->value, 'p');
+                    $output .= MarkerUpper::wrapInTag($this->value, 'div');
                     $output .= '</div>' . PHP_EOL . '<!-- /.section-readonly -->' . PHP_EOL;
                     $output .= Field::hidden($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
                     $output .= '</div>' . PHP_EOL;
