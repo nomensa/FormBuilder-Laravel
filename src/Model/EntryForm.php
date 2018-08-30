@@ -50,13 +50,29 @@ class EntryForm extends Model
     }
 
 
-    public function getFormInstanceIdsAttribute() : array
+    /**
+     * @param array $users
+     *
+     * @return array
+     */
+    public function formInstanceIdsForUsers(array $users) : array
     {
-        return DB::table('form_instances')
+        return $this->getFormInstanceIdsAttribute($users);
+    }
+
+
+    public function getFormInstanceIdsAttribute(array $users = null) : array
+    {
+        $q = DB::table('form_instances')
             ->leftJoin('form_versions','form_version_id','=','form_versions.id')
             ->select('form_instances.id as form_instances_id')
-            ->where('entry_form_id',$this->id)
-            ->get()
+            ->where('entry_form_id',$this->id);
+
+        if ($users) {
+            $q->whereIn('form_instances.user_id', $users);
+        }
+
+        return $q->get()
             ->pluck('form_instances_id')
             ->toArray();
     }
