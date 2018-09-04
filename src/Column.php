@@ -236,6 +236,11 @@ class Column
         if ($this->cloneable) {
             // Replace the zero surrounded by dots with the clone number
             $this->fieldNameWithBrackets = preg_replace('/\[0\]/', '[' . $group_index . ']', $this->fieldNameWithBrackets);
+            // ...and the same for dot notation in fieldName...
+            $this->fieldName = preg_replace('/\.0\./', '.' . $group_index . '.', $this->fieldName);
+            // ...and finally, for underscore-separated in id
+            $this->id = preg_replace('/_0_/', '_' . $group_index . '_', $this->id);
+
         }
 
         switch ($this->stateSpecificType) {
