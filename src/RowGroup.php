@@ -83,10 +83,12 @@ class RowGroup
             $iLimit = max(1,$requestGroupCloneCount,$rowGroupValueCounts);
 
             for ($group_index = 0; $group_index < $iLimit; $group_index++) {
-                $html .= $this->markupClone($formBuilder, $group_index);
+                $groupHTML = $this->markupClone($formBuilder, $group_index);
+                $html .= $groupHTML;
             }
 
-            if ($formBuilder->displayMode !== 'readonly') {
+            // If there is markup and the form is not read-only
+            if ($groupHTML != '' && $formBuilder->displayMode !== 'readonly') {
                 $html .= '<p><span class="btn btn-link btn-clone-rowGroup" data-target="' . $this->name . '">Add another</span></p>';
             }
 
