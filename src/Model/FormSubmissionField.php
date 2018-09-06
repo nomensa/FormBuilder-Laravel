@@ -82,9 +82,8 @@ class FormSubmissionField extends Model
      */
     public function scopeMyFormInstance ($query, $form_instance_id)
     {
-        return $query->whereHas('formSubmission', function ($q) use ($form_instance_id) {
-            $q->where('form_instance_id', $form_instance_id);
-        });
+        return $query->leftJoin('form_submissions', 'form_submission_id', '=', 'form_submissions.id')
+            ->where('form_submissions.form_instance_id', $form_instance_id);
     }
 
 }
