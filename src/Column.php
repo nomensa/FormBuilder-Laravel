@@ -416,7 +416,11 @@ class Column
                     }
 
                     $output .= MarkerUpper::wrapInTag($this->label, "h4");
-                    $output .= MarkerUpper::wrapInTag($this->options[$this->value], 'p');
+                    if (isSet($this->options[$this->value])) {
+                        $output .= MarkerUpper::wrapInTag($this->options[$this->value], 'p');
+                    } else {
+                        $output .= MarkerUpper::wrapInTag($this->value, 'p');
+                    }
                     $output .= '</div>' . PHP_EOL . '<!-- /.section-readonly -->' . PHP_EOL;
                     $output .= '</div>' . PHP_EOL;
                     $output .= Field::hidden($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
