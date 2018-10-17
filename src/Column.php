@@ -221,26 +221,15 @@ class Column
 
     /**
      * @param \Nomensa\FormBuilder\FormBuilder $formBuilder
-     * @param $group_index
      *
      * @return string
      */
-    private function markupField(FormBuilder $formBuilder, $group_index)
+    private function markupField(FormBuilder $formBuilder)
     {
         $output = '';
 
         if ($this->value === null) {
             $this->value = $this->parseDefaultValue($formBuilder);
-        }
-
-        if ($this->cloneable) {
-            // Replace the zero surrounded by dots with the clone number
-            $this->fieldNameWithBrackets = preg_replace('/\[0\]/', '[' . $group_index . ']', $this->fieldNameWithBrackets);
-            // ...and the same for dot notation in fieldName...
-            $this->fieldName = preg_replace('/\.0\./', '.' . $group_index . '.', $this->fieldName);
-            // ...and finally, for underscore-separated in id
-            $this->id = preg_replace('/_0_/', '_' . $group_index . '_', $this->id);
-
         }
 
         switch ($this->stateSpecificType) {
@@ -578,7 +567,16 @@ class Column
             $this->classBundle->add("errors");
         }
 
-        $columnHTML = $this->markupField($formBuilder, $group_index);
+        if ($this->cloneable) {
+            // Replace the zero surrounded by dots with the clone number
+            $this->fieldNameWithBrackets = preg_replace('/\[[\d]+\]/', '[' . $group_index . ']', $this->fieldNameWithBrackets);
+            // ...and the same for dot notation in fieldName...
+            $this->fieldName = preg_replace('/\.[\d]+\./', '.' . $group_index . '.', $this->fieldName);
+            // ...and finally, for underscore-separated in id
+            $this->id = preg_replace('/_[\d]+_/', '_' . $group_index . '_', $this->id);
+        }
+
+        $columnHTML = $this->markupField($formBuilder);
 
         // if type is neither ignore  or hidden or readonly, wrap it in a container div
         if ($this->stateSpecificType != 'ignore' && $this->stateSpecificType != 'hidden' && $state != 'readonly') {
