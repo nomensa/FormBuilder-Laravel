@@ -32,9 +32,8 @@ class CreateFormSubmissionsTable extends Migration
             $table->timestamp('date_rejected_at')->nullable();
             $table->integer('rejected_count')->default(0);
 
-            $table->text('uuid')->nullable();
             $table->integer('randomiser')->nullable();
-            $table->softDeletes();
+
             $table->timestamps();
 
             $table->foreign('form_instance_id')
