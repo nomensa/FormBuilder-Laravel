@@ -28,6 +28,15 @@ class FormInstance extends Model
 
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function formSubmissions()
+    {
+        return $this->hasMany('App\FormSubmission', 'form_instance_id');
+    }
+
+
+    /**
      * @return \Nomensa\FormBuilder\FormBuilder
      */
     public function getFormBuilder() : FormBuilder

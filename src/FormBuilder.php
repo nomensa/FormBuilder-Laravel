@@ -234,6 +234,36 @@ class FormBuilder
 
 
     /**
+     * Takes a state and returns a nested array representing all the fields that can exist in the HTTP request.
+     * Used by the Create and Update methods that deal with a POST request to modify fields in database.
+     *
+     * TODO: This should be extended to support cloneable row groups in future
+     *
+     * @param string $state - The state of the form (dictates which fields are hidden/editable/excluded/readonly)
+     *
+     * @return array
+     */
+    public function getRequestInputStructureInState($state): array
+    {
+        $structure = [];
+
+        foreach ($this->components as $component) {
+            if ($component->rowGroup) {
+                foreach ($component->rowGroup->rows as $row) {
+                    foreach ($row->columns as $column) {
+                        if (in_array($column->states[$state], ['editable','hidden'])) {
+                            $structure[$row->name][$column->field] = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $structure;
+    }
+
+
+    /**
      * @param string $row_name
      * @param null|int $group_index
      * @param string $field_name
