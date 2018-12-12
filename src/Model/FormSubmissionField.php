@@ -80,9 +80,10 @@ class FormSubmissionField extends Model
      *
      * @return mixed
      */
-    public function scopeMyFormInstance ($query, $form_instance_id)
+    public function scopeBelongingToFormInstance($query, $form_instance_id)
     {
         return $query->leftJoin('form_submissions', 'form_submission_id', '=', 'form_submissions.id')
+            ->select($this->getTable() . '.*')
             ->where('form_submissions.form_instance_id', $form_instance_id);
     }
 
