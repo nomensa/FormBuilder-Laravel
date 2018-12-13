@@ -47,7 +47,7 @@ class FormSubmission extends Model
         // Iterate over only the fields that should exist in this state (ignore any others that may have been injected)
         foreach ($inputStructure as $row_name => $row) {
             foreach (array_keys($row) as $name) {
-                if (isSet($fields[$row_name][$name])) {
+                if (array_key_exists($row_name, $fields) && array_key_exists($name, $fields[$row_name])) {
 
                     $value = $fields[$row_name][$name];
 
