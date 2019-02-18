@@ -420,7 +420,7 @@ class Column
             case "number-readonly":
             case "textarea-readonly":  /* Render text into the form and add a hidden field */
 
-                if (!empty($this->value)) {
+                if (!empty($this->value) || $this->value === 0) {
                     $output .= '<div class="' . $this->classBundle . '">';
                     $output .= '<div class="section-readonly">';
                     $output .= MarkerUpper::wrapInTag($this->label, "h4");
