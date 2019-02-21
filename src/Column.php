@@ -131,7 +131,7 @@ class Column
         $this->errors = $column_schema['errors'] ?? null;
 
         // Construct field name
-        $fieldName = FormBuilder::getRowPrefix() . '.' . $this->row_name;
+        $fieldName = $this->row_name;
         if ($this->cloneable) {
             $fieldName .= '.0'; // TODO Make this increment
         }
@@ -646,7 +646,7 @@ class Column
      */
     private function getState(FormBuilder $formBuilder)
     {
-        $key = 'state-' . $formBuilder->state_id;
+        $key = $formBuilder->getStateKey();
         if (isSet($this->states[$key])) {
             return $this->states[$key];
         }

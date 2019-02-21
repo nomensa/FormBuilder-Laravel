@@ -25,8 +25,11 @@ class FormBuilder
     /** @var \App\FormInstance $formInstance */
     public $formInstance;
 
-    /**  A key in the 'access' array in the schema that describes how a field is rendered */
+    /** DEPRECATED! An integer to describe state. Use $state_key below */
     public $state_id;
+
+    /** @var string - Key in the 'states' arrays in the schema that describes editability & visibility of a field */
+    public $state_key;
 
     /** Whether to override field display rules from access state  */
     public $displayMode;
@@ -105,7 +108,7 @@ class FormBuilder
     {
         $html = '';
         foreach ($this->components as $component) {
-            $html .= $component->markup($this, $this->state_id);
+            $html .= $component->markup($this);
         }
         return $html;
     }
@@ -137,12 +140,11 @@ class FormBuilder
     {
         $ruleGroupKey = 'default';
 
-        // check state id
-        $stateId = 'state-'.$this->state_id;
+        $state_key = $this->getStateKey();
 
         // if state_id exists in stateRuleGroups then use that one
-        if(isset($this->stateRuleGroups[$stateId])){
-            $ruleGroupKey = $this->stateRuleGroups[$stateId];
+        if(isset($this->stateRuleGroups[$state_key])){
+            $ruleGroupKey = $this->stateRuleGroups[$state_key];
         }
 
         if (!$this->formInstance) {
@@ -245,21 +247,80 @@ class FormBuilder
      */
     public function getRequestInputStructureInState($state): array
     {
-        $structure = [];
+        $rows = [];
 
         foreach ($this->components as $component) {
             if ($component->rowGroup) {
                 foreach ($component->rowGroup->rows as $row) {
-                    foreach ($row->columns as $column) {
-                        if (in_array($column->states[$state], ['editable','hidden'])) {
-                            $structure[$row->name][$column->field] = true;
+
+                    if ($row->cloneable) {
+
+                        if (!isSet($rows[$row->name])) {
+                            $rows[$row->name] = (object)[
+                                'cloneable' => true,
+                                'fields' => []
+                            ];
+                        }
+
+                        foreach ($row->rows as $cloneableRow) {
+                            foreach ($cloneableRow->columns as $column) {
+                                $rows[$row->name]->fields[] = $column->field;
+                            }
+                        }
+
+                    } elseif (is_array($row->columns)) {
+
+                        if (!isSet($rows[$row->name])) {
+                            $rows[$row->name] = (object)[
+                                'cloneable' => false,
+                                'fields' => []
+                            ];
+                        }
+
+                        foreach ($row->columns as $column) {
+                            if (isSet($column->states[$state])) {
+                                if (in_array($column->states[$state], ['editable', 'hidden'])) {
+                                    $rows[$row->name]->fields[] = $column->field;
+                                }
+
+                                // TODO: Temporary hack to account for:
+                                //  - hidden-for-learner
+                                //  - readonly_for_owner (Used by CUT, IAC, IACOA, ILTC)
+                                //  - editable_if_true_else_readonly
+                                // We can remove this when all implementations move away from db stored states
+                                // and into controller method imposed states.
+                                if (preg_match('/^(hidden|editable|readonly)(_|-)/', $column->states[$state])) {
+                                    $rows[$row->name]->fields[] = $column->field;
+                                }
+
+                            } else {
+                                // States were not defined in schema so let's assume it should be included in inputs
+                                $rows[$row->name]->fields[] = $column->field;
+                            }
                         }
                     }
                 }
             }
+
+            // If it's some funky custom component then the schema should contain field mappings
+            if ($component->fieldMappings) {
+                foreach ($component->fieldMappings as $field_key => $label) {
+                    list($group_key, $field_key) = explode('.', $field_key);
+
+                    if (!isSet($rows[$group_key])) {
+                        $rows[$group_key] = (object)[
+                            'cloneable' => false,
+                            'fields' => []
+                        ];
+                    }
+
+                    $rows[$group_key]->fields[] = $field_key;
+                }
+            }
+
         }
 
-        return $structure;
+        return $rows;
     }
 
 
@@ -351,20 +412,9 @@ class FormBuilder
         return MarkerUpper::inlineFieldError($this->errors, $fieldName, $this->fieldMap);
     }
 
-    /**
-     * Returns either the default blank string or a prefix set in user's config
-     */
-    public static function getRowPrefix()
-    {
-        if (!class_exists('config')) {
-            return '';
-        }
-        return config('formBuilder.rowPrefix') ?? '';
-    }
-
 
     /**
-     * Returns either the default blank string or a prefix set in user's config
+     * Returns either the default blank string or a maxChars set in user's config
      */
     public static function getMaxChars()
     {
@@ -381,6 +431,33 @@ class FormBuilder
     public function isReadOnly()
     {
         return ($this->displayMode === 'readonly');
+    }
+
+
+    /**
+     * @param string $state_key - The key in the array of states that are used on each field.
+     *                            Traditionally called 'state-1' and 'state-2' but could equally
+     *                            be called 'editing-name' or 'approving-feedback'.
+     */
+    public function setState(string $state_key)
+    {
+        $this->state_key = $state_key;
+    }
+
+
+    /**
+     *
+     *
+     * @return string
+     */
+    public function getStateKey()
+    {
+        // Legacy support for deprecated state_id variable
+        if ($this->state_id !== null && $this->state_key == null) {
+            $this->state_key = 'state-' . $this->state_id;
+        }
+
+        return $this->state_key;
     }
 
 

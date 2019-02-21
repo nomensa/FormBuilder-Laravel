@@ -68,7 +68,7 @@ class RowGroup
         if ($this->cloneable) {
 
             // See if there are any values in the old request
-            $name = $formBuilder->getRowPrefix() . '.' . $this->name;
+            $name = $this->name;
             $requestVals = old($name);
             $requestGroupCloneCount = count($requestVals);
 

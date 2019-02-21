@@ -13,7 +13,7 @@ class Row
     /** @var string */
     public $title;
 
-    /** @var @var string */
+    /** @var string */
     public $name;
 
     /** @var string */
