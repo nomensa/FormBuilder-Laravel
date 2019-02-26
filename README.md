@@ -7,9 +7,9 @@ This package reduces time and cost of application development by providing solut
 
  - The business process involves filling out many, long, complicated forms.
  - Form "ownership" is passed between different user roles.
- - Forms move through "states" during their life-cycle with different fields becoming editable by different user roles. 
- - The questions on the forms may change slightly at a future date, but the answers recorded against them must remain true to what the question was at the time the form was filled out. 
- - In the case where a few questions on a form have changed, it must be possible to produce reports containing both versions.
+ - Forms move through "states" during their life-cycle with different fields becoming editable/visible. 
+ - Versioning - The questions on a form may change at a future date, but the answers recorded against them must remain true to what the question was at the time the form was filled out. 
+ - Reporting across multiple versions of a form. In the case where a few questions on a form have changed, it must be possible to produce reports containing both versions.
 
 
 ## The Developer Case
