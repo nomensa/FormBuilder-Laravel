@@ -27,10 +27,56 @@ Although ultimate responsibility for making an interface accessible lies with th
 
 # Form "states"
 
-Each form has a lifecycle as it moves through different states.
+Each form can have multiple states and each field in the form can be marked-up in 1 of 4 ways in each state. 
 
-Let's use a school homework assignment as a simple example... Imagine a homework form is created by a student who fills out 3 answer fields. After submission the form is passed to a teacher, those first 3 fields become read-only and a 4th field called 'feedback' is revealed that only the teacher can fill. When the teacher submits the form, all 4 fields are read-only and both student and teacher can view the form in a read-only state. 
+The possible values are: 
 
+ - editable - _visible and editable_
+ - readonly - _visible but cannot be edited_
+ - hidden - _not visible but editable (eg. Via custom JavaScript)_
+ - ignore - _not included in the form markup_
+ 
+They can be imagined on a 2x2 matrix of editability and visibility.
+
+```
+            ----------------------
+    ^       | hidden | editable  |
+    |       |--------|-----------|
+editability | ignore | readonly |
+            ----------------------
+              visibility -->
+
+```
+
+Let's use a school homework assignment as a simple example. Imagine a simple quiz form is started by a student who has to fill 3 answer fields. After submission, the form is passed to a teacher, those first 3 answer fields now become read-only and a 4th field called 'feedback' is revealed that only the teacher can fill. When the teacher submits the form, all 4 fields become read-only and neither student nor teacher can edit the fields but both can view them in a read-only state. 
+
+In the above example the form has 3 states:
+ 1) The way the fields are displayed for the student
+ 2) The way the fields are displayed for the teacher
+ 3) The way the fields are displayed for the final state
+ 
+They are set for each field via an object of key-pair values in the schema. The states are given key names, a human description relevant to that form, and the value is how the particular field is displayed. 
+
+This is how the states object might be set for the first answer field:
+ 
+ ```
+ "states": {
+     "student-answering": "editable",
+     "teacher-marking": "readonly",
+     "final-view": "readonly"
+ }
+ ```
+
+### Legacy state values
+
+The codebase currently contains some support for a number of deprecated values. These use-case-specific values are legacy of the application that FormBuilder was original developed for and will not be supported in future releases. 
+
+For reference only and should not be used:
+
+ - editable_if_true_else_ignore
+ - editable_if_true_else_readonly
+ - hidden-for-learner
+ - readonly_for_owner
 
 ## Getting started
 
