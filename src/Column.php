@@ -276,7 +276,11 @@ class Column
                     $output .= '<ul id="' . $origID . '_values">';
                     foreach ($values as $i => $value) {
                         $output .= Field::hidden($this->fieldNameWithBrackets . '[]', $value);
-                        $output .= '<li>' . $this->options[$value] . '</li>';
+                        if (isSet($this->options[$value])) {
+                            $output .= '<li>' . $this->options[$value] . '</li>';
+                        } else {
+                            $output .= '<li>' . $value . '</li>';
+                        }
                     }
                     $output .= '</ul>';
                 }
