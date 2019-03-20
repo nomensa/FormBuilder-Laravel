@@ -152,25 +152,29 @@ trait FieldMapping
     /**
      * Returns the validation rules for this state
      *
-     * @param $state_id
+     * @param string|number $state_key
      *
      * @return array
      */
-    public function getStateRules($state_id)
+    public function getStateRules($state_key) : array
     {
         $rules = [];
 
-        $state_id = 'state-'.$state_id;
+        // Legacy support for when states were only 'state-' followed by a number
+        if (is_numeric($state_key)) {
+            $state_key = 'state-' . $state_key;
+        }
 
         foreach ($this->getFields() as $key => $field) {
 
             if ($field->cloneable) {
                 // Don't assume required for cloneable fields, developer should implement their own rules
 
-            } elseif (!isSet($field->states[$state_id]) || $field->states[$state_id] == 'editable') {
+            } elseif (!isSet($field->states[$state_key]) || $field->states[$state_key] == 'editable') {
                 $rules[$key] = 'required';
             }
         }
+
         return $rules;
     }
 
