@@ -4,6 +4,7 @@ namespace Nomensa\FormBuilder\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Nomensa\FormBuilder\Exceptions\InvalidSchemaException;
 use Nomensa\FormBuilder\FormBuilder;
 use App\EntryForm;
 use File;
