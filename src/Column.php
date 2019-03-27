@@ -270,20 +270,11 @@ class Column
                 $output .= '<div class="' . $this->classBundle . '">';
                 $output .= '<div class="section-readonly">';
                 $output .= MarkerUpper::wrapInTag($this->label, "h4");
-                $origID = $attributes['id'];
 
                 if (is_array($values)) {
-                    $output .= '<ul id="' . $origID . '_values">';
-                    foreach ($values as $i => $value) {
-                        $output .= Field::hidden($this->fieldNameWithBrackets . '[]', $value);
-                        if (isSet($this->options[$value])) {
-                            $output .= '<li>' . $this->options[$value] . '</li>';
-                        } else {
-                            $output .= '<li>' . $value . '</li>';
-                        }
-                    }
-                    $output .= '</ul>';
+                    $output .= $this->readonlyMultipleValues($attributes['id'], $values);
                 }
+
                 $output .= '</div>' . PHP_EOL . '<!-- /.section-readonly -->' . PHP_EOL;
                 $output .= '</div>' . PHP_EOL;
                 return $output;
@@ -294,7 +285,21 @@ class Column
                 $attributes = $this->asFormArray();
                 $attributes['class'] = CSSClassFactory::selectClassBundle();
 
-                return Form::select($this->fieldNameWithBrackets, $this->options, $this->value, $attributes);
+                $fieldName = $this->fieldNameWithBrackets;
+
+                // If this select is a multi-select, we need to add empty square brackets on the
+                // end to make sure all options are passed through to the request.
+                if (isSet($attributes['multiple'])) {
+                    $fieldName .= '[]';
+                }
+
+                // If the value can be decoded to an array of values, do it.
+                $values = json_decode($this->value);
+                if (!is_array($values)) {
+                    $values = $this->value;
+                }
+
+                return Form::select($fieldName, $this->options, $values, $attributes);
                 break;
 
             case "radios":
@@ -409,14 +414,25 @@ class Column
                     }
 
                     $output .= MarkerUpper::wrapInTag($this->label, "h4");
-                    if (isSet($this->options[$this->value])) {
-                        $output .= MarkerUpper::wrapInTag($this->options[$this->value], 'p');
+
+                    $attributes = $this->asFormArray();
+                    $values = json_decode($this->value, true);
+
+                    if (is_array($values)) {
+                        $output .= $this->readonlyMultipleValues($attributes['id'], $values);
                     } else {
-                        $output .= MarkerUpper::wrapInTag($this->value, 'p');
+
+                        if (isSet($this->options[$this->value])) {
+                            $output .= MarkerUpper::wrapInTag($this->options[$this->value], 'p');
+                        } else {
+                            $output .= MarkerUpper::wrapInTag($this->value, 'p');
+                        }
+
                     }
+
                     $output .= '</div>' . PHP_EOL . '<!-- /.section-readonly -->' . PHP_EOL;
                     $output .= '</div>' . PHP_EOL;
-                    $output .= Field::hidden($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
+                    $output .= Field::hidden($this->fieldNameWithBrackets, $this->value, $attributes);
                 }
                 break;
 
@@ -491,6 +507,30 @@ class Column
                 break;
 
         }
+
+        return $output;
+    }
+
+
+    /**
+     * Used by checkboxes and multi-selects to print a list of values
+     *
+     * @param string $origID
+     * @param array $values
+     *
+     * @return string
+     */
+    private function readonlyMultipleValues($origID, array $values) : string
+    {
+        $output = '<ul id="' . $origID . '_values">';
+        foreach ($values as $i => $value) {
+
+            // TODO: This hidden field is legacy support and should be able to be removed soon
+            $output .= Field::hidden($this->fieldNameWithBrackets . '[]', $value);
+
+            $output .= '<li>' . FormBuilder::findHumanValueIfAvailable($this->options, $value) . '</li>';
+        }
+        $output .= '</ul>';
 
         return $output;
     }

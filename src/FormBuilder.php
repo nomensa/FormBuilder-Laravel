@@ -389,10 +389,36 @@ class FormBuilder
     public function getFieldHumanValue($row_name, $field_name, $value_key) : string
     {
         $options = $this->getFieldOptions($row_name, $field_name);
-        if (isSet($options[$value_key])) {
-            return $options[$value_key];
+
+        return self::findHumanValueIfAvailable($options, $value_key);
+    }
+
+
+    /**
+     * Gets the human form of the option if it can be found, else falls back to returning the key
+     *
+     * @param array $options
+     * @param string $key
+     *
+     * @return string
+     */
+    public static function findHumanValueIfAvailable(array $options, $key) : string
+    {
+        if (isSet($options[$key])) {
+            return $options[$key];
         }
-        return $value_key;
+
+        // Iterate over the options, seeing if they are actually optgroups with options inside
+        foreach ($options as $option) {
+            if (is_array($option)) {
+                if (isSet($option[$key])) {
+                    return $option[$key];
+                }
+            }
+        }
+
+        // Give up, just return key
+        return $key;
     }
 
 
