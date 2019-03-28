@@ -28,6 +28,34 @@ class FormSubmission extends Model
 
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function formAssociationsAsRoot()
+    {
+        return $this->hasMany('App\FormAssociation', 'root_form_submission_id');
+    }
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function formAssociationsAsDestination()
+    {
+        return $this->hasMany('App\FormAssociation', 'destination_form_submission_id');
+    }
+
+
+    public function assignFormAssociation($type, FormSubmission $formSubmission)
+    {
+        return FormAssociation::create([
+            'type' => $type,
+            'root_form_submission_id' => $this->id,
+            'destination_form_submission_id' => $formSubmission->id
+        ]);
+    }
+
+
+    /**
      * Updates fields based on schema in a specific state
      *
      * @param array $inputs
