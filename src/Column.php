@@ -381,11 +381,6 @@ class Column
                 return Field::text($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
                 break;
 
-            case "password":
-
-                return Form::bsPassword($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
-                break;
-
             case "date-readonly":  /* Render text into the form and add a hidden field */
 
                 if (!empty($this->value)) {
@@ -402,6 +397,22 @@ class Column
 
                 break;
 
+            case "time-readonly":
+
+                $output .= '<div class="' . $this->classBundle . '">';
+                $output .= '<div class="section-readonly">';
+                $output .= MarkerUpper::wrapInTag($this->label, "h4");
+                $output .= MarkerUpper::wrapInTag($this->value, 'p');
+                $output .= '</div>' . PHP_EOL . '<!-- /.section-readonly -->' . PHP_EOL;
+                $output .= '</div>' . PHP_EOL;
+
+                break;
+
+            case "password":
+
+                return Form::bsPassword($this->fieldNameWithBrackets, $this->value, $this->asFormArray());
+                break;
+                
             case "radios-readonly":  /* Render text into the form and add a hidden field */
             case "select-readonly":  /* Render text into the form and add a hidden field */
 
