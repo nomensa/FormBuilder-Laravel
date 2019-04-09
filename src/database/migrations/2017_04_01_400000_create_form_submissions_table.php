@@ -20,7 +20,7 @@ class CreateFormSubmissionsTable extends Migration
 
             $table->integer('form_instance_id')->unsigned();
 
-            $table->integer('user_id');
+            $table->integer('user_id')->unsigned()->nullable();
             $table->integer('form_submission_status_id')->default(1);
             $table->string('title')->nullable();
             $table->boolean('readonly')->default(0)->nullable();
