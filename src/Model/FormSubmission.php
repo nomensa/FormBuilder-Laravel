@@ -113,6 +113,11 @@ class FormSubmission extends Model
 
         }
 
+        // If the formSubmissionFields relationship has been eager-loaded, unset it because it will be out-of-date
+        if (array_key_exists('formSubmissionFields', $this->relations) ) {
+            unset($this->relations['formSubmissionFields']);
+        }
+
         return $inputs;
     }
 
