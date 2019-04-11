@@ -198,6 +198,55 @@ As well as the obvious expected types such as `text`, `textarea`, `select` and `
 
  - `checkboxes` - Multiple checkboxes all with a shared name prefix
  - `radios` - A group of radio buttons all with a shared name
+ 
+## Custom Components
+
+Although most input fields on a form are the usual suspects, sometimes you just need to do something different. For that 
+reason, any form schema can include Custom Components allowing you to do anything. 
+
+Firstly, create a Blade template in the folder for FormBuilder Components 
+(eg. `/views/components/formbuilder/example-component.blade.php`)
+
+Secondly, add a reference to it in your form schema as follows: 
+ 
+```
+[
+  {
+    "type": "example-component"
+  }
+]
+``` 
+
+If your template is going to include any input fields that need to be read in the request, name them in the `field-mappings`
+
+For example imagine your custom component contains a hidden input element with name="address[gps-location]". The 
+following schema config will ensure it gets read from the request variables.  
+
+```
+[
+  {
+    "type": "logbook-hospital-select",
+    "field-mappings": {
+      "address.gps-location": "GPS Location"
+    }
+  }
+]
+```
+
+Finally, if you want to re-use the same custom component in multiple forms you may want to inject some variables into it 
+to be used in the Blade. Do this by declaring any variables as key-value pairs in `componentData` in the schema:
+
+```
+[
+  {
+    "type": "file-upload",
+    "componentData": {
+      "instructions": "Please attach an image of a kitten."
+    }
+  }
+]  
+
+```
 
 ## Cool edge cases
 
