@@ -40,6 +40,7 @@ class Component
 
     }
 
+
     /**
      * @param \Nomensa\FormBuilder\FormBuilder $formBuilder - The containing form
      *
@@ -50,10 +51,15 @@ class Component
         if ($this->type == "dynamic") {
             return $this->rowGroup->markup($formBuilder);
         } else {
+
             $data = array_merge( [
                 'formBuilder' => $formBuilder,
-                'componentData' => $this->componentData
             ], $formBuilder->viewData );
+
+            // If componentData has been provided in the schema, throw these in the mix too!
+            if (is_array($this->componentData)) {
+                $data = array_merge($data, $this->componentData);
+            }
 
             $view = View::make('components.formbuilder.' . $this->type, $data);
             return $view->render();
