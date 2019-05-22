@@ -64,8 +64,6 @@ class Column
     /** @var array of display states */
     public $states;
 
-    public $displayMode;
-
     /** @var array */
     public $classes;
 
@@ -121,7 +119,6 @@ class Column
 
         $this->prefix = $column_schema['prefix'] ?? null;
 
-        $this->displayMode = $column_schema['displayMode'] ?? null;
         $this->parentTitle = $column_schema['parentTitle'] ?? null;
         $this->classes = $column_schema['classes'] ?? null;
         $this->disabled = $column_schema['disabled'] ?? null;
@@ -564,7 +561,6 @@ class Column
         $this->selected = isset($this->selected) ? $this->selected : null;
         $this->saved = isset($this->saved) ? $this->saved : null;
         $this->label = $this->label ?? null;
-        $this->displayMode = $formBuilder->displayMode;
 
         $this->value = $formBuilder->getFieldValue($this->row_name, $group_index, $this->field);
 
@@ -599,7 +595,7 @@ class Column
 
         if ($state == 'readonly_for_owner' && $formBuilder->owner->id == Auth::user()->id ||
             $state == 'editable_for_owner' && $formBuilder->owner->id != Auth::user()->id ||
-            $state != 'hidden' && $this->displayMode == 'readonly' ||
+            $state != 'hidden' && $formBuilder->isDisplayMode('reading') ||
             $state == 'readonly') {
             $state = 'readonly';
             $this->stateSpecificType = $this->type . '-' . $state;

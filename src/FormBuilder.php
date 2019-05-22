@@ -7,8 +7,17 @@ use App\EntryFormInstance;
 use App\FormSubmission;
 use Illuminate\Support\MessageBag;
 
+use Nomensa\FormBuilder\Exceptions\InvalidDisplayModeException;
+
 class FormBuilder
 {
+
+    const VALID_DISPLAY_MODES = [
+        'creating',
+        'reading',
+        'updating',
+        'deleting'
+    ];
 
     use MarkerUpper;
     use FieldMapping;
@@ -31,8 +40,8 @@ class FormBuilder
     /** @var string - Key in the 'states' arrays in the schema that describes editability & visibility of a field */
     public $state_key;
 
-    /** Whether to override field display rules from access state  */
-    public $displayMode;
+    /** @var string - Verb describing what the user is doing with the form */
+    private $displayMode;
 
     /** @var array - Any additional variables that need to be made available */
     public $viewData;
@@ -451,12 +460,31 @@ class FormBuilder
     }
 
 
-    /**
-     * @return bool
-     */
-    public function isReadOnly()
+    public function setDisplayMode($verb)
     {
-        return ($this->displayMode === 'readonly');
+        if (!in_array($verb, self::VALID_DISPLAY_MODES)) {
+            throw new InvalidDisplayModeException($verb . ' is not a valid displayMode.');
+        }
+
+        $this->displayMode = $verb;
+
+        return $this;
+    }
+
+
+    public function getDisplayMode()
+    {
+        return $this->displayMode;
+    }
+
+
+    public function isDisplayMode($verb) : bool
+    {
+        if (!in_array($verb, self::VALID_DISPLAY_MODES)) {
+            throw new InvalidDisplayModeException($verb . ' is not a valid displayMode.');
+        }
+
+        return $verb === $this->displayMode;
     }
 
 

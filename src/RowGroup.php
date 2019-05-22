@@ -88,7 +88,7 @@ class RowGroup
             }
 
             // If there is markup and the form is not read-only
-            if ($groupHTML != '' && $formBuilder->displayMode !== 'readonly') {
+            if ($groupHTML != '' && !$formBuilder->isDisplayMode('reading')) {
                 $html .= '<p><span class="btn btn-link btn-clone-rowGroup" data-target="' . $this->name . '">Add another</span></p>';
             }
 

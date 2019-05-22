@@ -4,6 +4,7 @@ use PHPUnit\Framework\TestCase;
 
 use Nomensa\FormBuilder\FormBuilder;
 use Nomensa\FormBuilder\Exceptions\InvalidSchemaException;
+use Nomensa\FormBuilder\Exceptions\InvalidDisplayModeException;
 
 class FormBuilderTest extends TestCase {
 
@@ -187,6 +188,38 @@ class FormBuilderTest extends TestCase {
         $option = $formBuilder->getFieldHumanValue('dynamic','favourite-horse','black-beauty');
         $this->assertEquals("Black Beauty",$option);
     }
+
+
+    public function testReadonlyIsInvalidDisplayMode()
+    {
+        $this->expectException(InvalidDisplayModeException::class);
+        $this->expectExceptionMessage('readonly is not a valid displayMode');
+
+        $formBuilder = $this->makeTestFormBuilder();
+
+        $formBuilder->setDisplayMode('readonly');
+    }
+
+
+    public function testGetDisplayMode()
+    {
+        $formBuilder = $this->makeTestFormBuilder();
+
+        $formBuilder = $formBuilder->setDisplayMode('deleting');
+
+        $this->assertEquals('deleting', $formBuilder->getDisplayMode());
+    }
+
+
+    public function testReadingIsValidDisplayMode()
+    {
+        $formBuilder = $this->makeTestFormBuilder();
+
+        $formBuilder = $formBuilder->setDisplayMode('reading');
+
+        $this->assertTrue($formBuilder->isDisplayMode('reading'));
+    }
+
 
 
 }

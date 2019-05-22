@@ -78,6 +78,20 @@ For reference only and should not be used:
  - hidden-for-learner
  - readonly_for_owner
 
+
+# Display Mode
+
+Display mode describes how the user is interacting with the form during the request. It can only be 1 of the 4 CRUD verbs: _creating, reading, updating, deleting._ 
+
+ - You can set it on an instance of FormBuilder using the `->setDisplayMode(string $verb)` method. 
+ - You can check if FormBuilder is in a particular display mode using `->isDisplayMode(string $verb)` method which returns a boolean.
+ - You can get it using the `->getDisplayMode()` method. 
+ 
+It's _mostly_ implemented simply as an enumerated variable that can be checked to determine things like what button or wording is displayed in a custom component _(eg. Does the button say "Create" or "Update")._ 
+
+However, one built-in use of display mode is when fields are being rendered. If a form is being rendered in the display mode _reading_ then fields that are 'editable' in the current state are overridden to be 'readonly'. _(Note: The opposite affect is not applied, readonly fields are not forced to editable if the display mode is 'updating')._ 
+
+
 ## Getting started
 
 Installation is easy with the following steps:
