@@ -277,4 +277,14 @@ class FormSubmission extends Model
         return $formSubmissionField;
     }
 
+
+    public function deleteField(string $row_name, string $field_name)
+    {
+        return $this->formSubmissionFields()
+            ->where('row_name', $row_name)
+            ->where('field_name', $field_name)
+            ->limit(1)
+            ->delete();
+    }
+
 }
