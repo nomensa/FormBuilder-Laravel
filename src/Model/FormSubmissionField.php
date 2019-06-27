@@ -42,7 +42,7 @@ class FormSubmissionField extends Model
      * Get array of IDs of EntryFormSubmissions based on values
      *
      * @param string $field_name
-     * @param string $operator
+     * @param string $operator - Example values: '=', 'LIKE', '>', '<', '<>'
      * @param string $value
      * @param array $form_submission_ids
      * @param bool $use_value_date
@@ -59,7 +59,14 @@ class FormSubmissionField extends Model
             ->where('field_name',$field_name);
 
         if ($use_value_date) {
-            $query->where('value_date', $operator, $value);
+
+            if ($operator == '<>' && $value == '') {
+                // Stricter db engines do not treat "more or less than blank string" as "NOT NULL" so we need to convert
+                $query->whereNotNull('value_date');
+            } else {
+                $query->where('value_date', $operator, $value);
+            }
+
         } else if (preg_match('/^[0-9]+$/', $value)) {
             $query->where('value_int', $operator, $value);
         } else {
