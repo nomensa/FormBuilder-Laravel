@@ -107,8 +107,10 @@ class FormSubmission extends Model
 
             foreach ($inputs['cloneableRowGroupsCounts'] as $row_name => $count) {
 
-                // Delete any form_submission_fields with this row_name and a group index higher than $count-1
-                $this->deleteFieldsWithGroupIndexAbove($row_name, $count - 1);
+                if ($count > 0) {
+                    // Delete any form_submission_fields with this row_name and a group index higher than $count-1
+                    $this->deleteFieldsWithGroupIndexAbove($row_name, $count - 1);
+                }
             }
 
         }
