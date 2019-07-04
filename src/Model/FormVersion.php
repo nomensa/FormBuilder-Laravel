@@ -301,7 +301,7 @@ class FormVersion extends Model
      */
     protected function getFormDefinitionFolder() : string
     {
-        return app_path(trim($this->formDefinitionsFolder, '/') . '/' . $this->entryForm->code);
+        return app_path(trim($this->formDefinitionsFolder, '/') . '/' . $this->entryForm->slug);
     }
 
 }
