@@ -17,8 +17,8 @@ class CreateFormAssociationsTable extends Migration
     {
         Schema::create($this->table, function (Blueprint $table) {
             $table->increments('id');
-            $table->string('type');
             $table->integer('root_form_submission_id')->unsigned();
+            $table->string('type');
             $table->integer('destination_form_submission_id')->unsigned();
             $table->timestamp('created_at');
 
