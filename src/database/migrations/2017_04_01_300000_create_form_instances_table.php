@@ -20,7 +20,6 @@ class CreateFormInstancesTable extends Migration
             $table->integer('form_version_id')->unsigned();
 
             $table->integer('form_instance_parent_id')->nullable();
-            $table->integer('status')->default(0);
             $table->integer('state_id')->default(1);
             $table->integer('user_id')->nullable();
             $table->integer('workflow_id')->unsigned()->nullable();
