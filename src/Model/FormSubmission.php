@@ -82,7 +82,7 @@ class FormSubmission extends Model
                         if (isSet($inputs[$row_name][$group_index][$field_name])) {
                             $value = $inputs[$row_name][$group_index][$field_name];
 
-                            $this->updateFieldIfExists($i, $row_name, $group_index, $field_name, $value);
+                            $this->saveOrUpdateField($i, $row_name, $group_index, $field_name, $value);
                             $i++;
                         }
                     }
@@ -95,7 +95,7 @@ class FormSubmission extends Model
 
                         $value = $inputs[$row_name][$field_name];
 
-                        $this->updateFieldIfExists($i, $row_name, null, $field_name, $value);
+                        $this->saveOrUpdateField($i, $row_name, null, $field_name, $value);
                         $i++;
 
                     }
@@ -153,7 +153,7 @@ class FormSubmission extends Model
      */
     public function updateRowFieldValue($row_name, $field_name, $value): FormSubmissionField
     {
-        return $this->updateFieldIfExists(0, $row_name, null, $field_name, $value);
+        return $this->saveOrUpdateField(0, $row_name, null, $field_name, $value);
     }
 
 
@@ -166,7 +166,7 @@ class FormSubmission extends Model
      *
      * @return \App\FormSubmissionField - The same field passed in, but updated
      */
-    public function updateFieldIfExists($weight, $row_name, $group_index, $field_name, $value): FormSubmissionField
+    public function saveOrUpdateField($weight, $row_name, $group_index, $field_name, $value): FormSubmissionField
     {
         // Check if existing row
         $field = FormSubmissionField::where([
@@ -177,11 +177,12 @@ class FormSubmission extends Model
         ])->first();
 
         if ($field) {
+            // It exists, let's update it
             $field = $this->populateFormSubmissionField($weight, $row_name, $group_index, $field_name, $value, $field);
             $field->save();
             return $field;
         } else {
-
+            // It doesn't exist
             return $this->saveField($weight, $row_name, $group_index, $field_name, $value);
         }
     }
@@ -258,7 +259,16 @@ class FormSubmission extends Model
         } else {
 
             if (is_array($value) == true) {
-                $value = json_encode($value);
+
+                $arrayKeys = implode('', array_keys($value));
+
+                // This is a bit of a strange check to handle associative arrays with numeric, but not sequential keys
+                // as handed in by some browsers (Behat) when posting a request with an array of checkbox values.
+                if (preg_match('/^[\d]+$/', $arrayKeys)) {
+                    $value = json_encode( array_values($value) );
+                } else {
+                    $value = json_encode($value);
+                }
             }
 
             // If value is only numeric characters, save it in the dedicated integer field
