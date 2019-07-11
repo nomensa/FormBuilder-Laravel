@@ -478,7 +478,29 @@ class FormBuilder
     }
 
 
-    public function isDisplayMode($verb) : bool
+    /**
+     * @param string|array $verbs
+     * @return bool
+     *
+     * @throws InvalidDisplayModeException
+     */
+    public function isDisplayMode($verbs) : bool
+    {
+        if (is_string($verbs)) {
+            return $this->isSingleDisplayMode($verbs);
+        } elseif (is_array($verbs)) {
+            foreach ($verbs as $verb) {
+                if ($this->isSingleDisplayMode($verb)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+    private function isSingleDisplayMode($verb) : bool
     {
         if (!in_array($verb, self::VALID_DISPLAY_MODES)) {
             throw new InvalidDisplayModeException($verb . ' is not a valid displayMode.');

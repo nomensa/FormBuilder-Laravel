@@ -211,13 +211,33 @@ class FormBuilderTest extends TestCase {
     }
 
 
-    public function testReadingIsValidDisplayMode()
+    public function testReadingIsDisplayModeWithSingleValue()
     {
         $formBuilder = $this->makeTestFormBuilder();
 
         $formBuilder = $formBuilder->setDisplayMode('reading');
 
         $this->assertTrue($formBuilder->isDisplayMode('reading'));
+    }
+
+
+    public function testReadingIsDisplayModeWithMultipleValues1()
+    {
+        $formBuilder = $this->makeTestFormBuilder();
+
+        $formBuilder = $formBuilder->setDisplayMode('reading');
+
+        $this->assertTrue($formBuilder->isDisplayMode(['reading', 'updating']));
+    }
+
+
+    public function testReadingIsDisplayModeWithMultipleValues2()
+    {
+        $formBuilder = $this->makeTestFormBuilder();
+
+        $formBuilder = $formBuilder->setDisplayMode('reading');
+
+        $this->assertTrue($formBuilder->isDisplayMode(['updating', 'reading']));
     }
 
 
