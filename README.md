@@ -1,6 +1,19 @@
 
 # FormBuilder - A Laravel package
 
+- [The Business Case](#the-business-case)
+- [The Developer Case](#the-developer-case)
+- [The Accessibility Case](#the-accessibility-case)
+- [Form states](#form-states)
+- [Display Mode](#display-mode)
+- [Getting started](#getting-started)
+- [Contributors](#contributors)
+- [Artisan commands](#artisan-commands)
+- [Field types](#field-types)
+- [Custom Components](#custom-components)
+- [Cool edge cases](#cool-edge-cases)
+- [Database Model Tables](#database-model-tables)
+
 ## The Business Case
 
 This package reduces time and cost of application development by providing solutions to the following requirements: 
@@ -20,7 +33,7 @@ FormBuilder aims to reduce complexity and repetition for the developer by provid
  - The ability to choose CSS class names applied to elements in markup.
  - Artisan commands to create the required database migrations, models, controllers and to create new form schemas.
 
-## Accessibility Case
+## The Accessibility Case
 
 Although ultimate responsibility for making an interface accessible lies with the developer, FormBuilder does not stand in the way. Current standards have been followed when defining how the forms are markedup but provisions to override all parts of the system are in place should an edge case need to be implemented.  
 
@@ -39,11 +52,11 @@ The possible values are:
 They can be imagined on a 2x2 matrix of editability and visibility.
 
 ```
-            ----------------------
-    ^       | hidden | editable  |
-    |       |--------|-----------|
+            ---------------------
+    ^       | hidden | editable |
+    |       |--------|----------|
 editability | ignore | readonly |
-            ----------------------
+            ---------------------
               visibility -->
 
 ```
@@ -188,7 +201,7 @@ Congratulations! You should now have a working form that can be submitted and sa
 
 ## Contributors
 
-Read CONTRIBUTING.md
+Read [CONTRIBUTING.md](CONTRIBUTING.md)
 
 
 ## Dependencies
@@ -267,3 +280,54 @@ to be used in the Blade. Do this by declaring any variables as key-value pairs i
 Because FormBuilder was developed as part of a client-specific application there are some cool edge cases accounted for that other FormBuilder packages do not: 
 
  - Type of radio button where the client required the user to explicitly set a value, no pre-selected. 
+
+## Database Model Tables
+
+This library contains migrations for 8 tables. These will get auto-discovered by Laravel. 
+If you want to disable discovery you can [opt out of package discovery](https://laravel.com/docs/5.8/packages#package-discovery) and copy the migrations into your application code.
+
+### entry_form_types
+
+Categories for grouping Entry Forms (`entry_forms`).
+
+### entry_forms
+
+Contains the Entry Forms _(these could easily just be referred to as "forms")_. Each row belongs to a 
+row in `entry_form_types`.
+
+### form_versions
+
+Defines current and legacy versions of a form's schema _(What fields it contains)_ to accommodate 
+both future changes and backwards compatibility for existing submissions. Each row belongs to a row in `entry_forms`. 
+
+### workflows _(deprecating)_
+ 
+This was originally introduced to store descriptions of workflow so an instance can 
+belong to it. A workflow would describe if it was started by one role and then passed to another or vice versa. 
+In practice this was confusing and workflow is much better represented by good use of form submission status 
+(`form_submission_status_id`) or a meta-field on the form that is set by the controller.
+
+### form_instances _(deprecating)_
+
+This is the link between `form_submissions` and `form_versions` and will be removed in future versions. 
+
+### form_submission_statuses
+
+Named stages that a form moves through in it's life.
+
+### form_submissions
+
+A specific submission of data made by a user for a particular version of a form. Currently each 
+row belongs to a row in `form_instances` but when that is deprecated it will belong to a row in `form_versions`.
+
+### form_submission_fields
+
+Holds the data for a specific field of a submission of a form. Each row belongs to a row 
+in `form_submissions`.
+
+### form_associations
+
+A pivot table for associating `form_submissions` with other form_submissions. The `type` column 
+is a human-friendly slug that describes the relationship of the root form submission to the destination form submission 
+_(eg. a_goal_of, or a_reflection_on)_.
+
