@@ -24,7 +24,6 @@ class CreateFormInstancesTable extends Migration
             $table->integer('user_id')->nullable();
             $table->integer('workflow_id')->unsigned()->nullable();
             $table->boolean('started_by_assessor')->default(0);
-            $table->integer('allow_multiple_submissions')->default(0)->nullable();
 
             $table->timestamps();
 

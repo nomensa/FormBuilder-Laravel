@@ -32,8 +32,6 @@ class CreateEntryFormsTable extends Migration
             $table->string('reviewed')->nullable();
             $table->string('source')->nullable();
 
-            $table->integer('allow_multiple_submissions')->default(0)->nullable();
-
             $table->integer('weight')->default(0)->nullable();
             $table->boolean('live')->default(0);
 
