@@ -33,6 +33,8 @@ class FormVersion extends Model
     private $formInstanceCount;
     private $formSubmissionCount;
 
+    protected $dates = ['created_at', 'updated_at'];
+
     /**
      * @param EntryForm $entryForm
      *
@@ -106,6 +108,22 @@ class FormVersion extends Model
     public function getVersionNameAttribute() : string
     {
         return 'v' . $this->version_number;
+    }
+
+
+    /**
+     * Returns a human-readable string of the updated_at field
+     * or blank string if not available.
+     *
+     * @return string
+     */
+    public function getUpdatedAtHumanAttribute() : string
+    {
+        if (is_null($this->updated_at)) {
+            return '';
+        }
+
+        return $this->updated_at->format('j F Y');
     }
 
 
