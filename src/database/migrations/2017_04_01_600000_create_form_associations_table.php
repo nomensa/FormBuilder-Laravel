@@ -20,7 +20,7 @@ class CreateFormAssociationsTable extends Migration
             $table->integer('root_form_submission_id')->unsigned();
             $table->string('type');
             $table->integer('destination_form_submission_id')->unsigned();
-            $table->timestamp('created_at');
+            $table->timestamp('created_at')->useCurrent();
 
             $table->foreign('root_form_submission_id')
                 ->references('id')
