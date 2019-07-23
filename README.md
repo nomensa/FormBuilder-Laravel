@@ -138,13 +138,14 @@ Add aliases to `config/app.php` file:
  - Add routes declaration
  - Run db migrations to rebuild database schema
  - Include the FormBuilder JavaScript script
- 
-### Creating a basic first form
+
+
+## Creating a basic first form
  
 Run the artisan command to create a form, let's call it _"My First Form"_.
  
 ```bash
-$ php artisan formbuilder:make-form MY-FORM "My First Form"`
+$ php artisan formbuilder:make-form MY-FORM "My First Form"
 ```
  
 Now open `/app/FormBuilder/Forms/MY-FORM/schema.json` in your editor and paste in the following code: 
@@ -189,14 +190,62 @@ Now open `/app/FormBuilder/Forms/MY-FORM/schema.json` in your editor and paste i
   }
 ]
 ```
- 
-Now add a link to create this type of form somewhere in your application's blade files: 
+
+
+Now we will create an instance of FormBuilder in our controller, with this form loaded in:
 
 ```php
-{{ link_to_route('entryforms.cloneform', 'My First Form', ['entryform'=>'my-first-form']) }}
+<?php
+ 
+namespace App\Http\Controllers;
+ 
+class MyGreatFormController extends Controller
+{
+    
+    ...
+    
+    public function create() 
+    {
+        $entryForm = EntryForm::where('slug','my-form')->firstOrFail();
+        
+        $formVersion = $entryForm->currentFormVersion;
+        $formBuilder = $formVersion->getFormBuilder();
+        
+        // TODO: In a future release this will be tidied so errors are pulled from the session automatically
+        $errors = new MessageBag();
+        
+        $arrSession = session()->all();
+        if (isSet($arrSession['errors'])) {
+            $errors = $arrSession['errors']->getBag('default');
+        }
+        $formBuilder->errors = $errors;
+        
+        $formBuilder->setState('editing');
+        $formBuilder->setDisplayMode('creating');
+        
+        return view('form.create', $formBuilder->viewData);
+    }
+    
+}    
 ```
 
-Congratulations! You should now have a working form that can be submitted and saved in database.
+And then in the view is where this library really saves you a lot of code!
+
+```
+// form/create.blade.php
+
+<h1>My Great Form</h1>
+
+{{ Form::open() }}
+
+    {!! $formBuilder->markup() !!}
+    
+    {{ Field::submit('Save') }}
+
+{{ Form::close() }}
+```
+
+TODO: Finish this section to describe FormSubmission creation/reading/updating and deleting.
 
 
 ## Contributors
