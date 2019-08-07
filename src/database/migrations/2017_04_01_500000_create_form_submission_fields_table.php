@@ -17,9 +17,9 @@ class CreateFormSubmissionFieldsTable extends Migration
         Schema::create($this->table, function (Blueprint $table) {
             $table->increments('id');
             $table->integer('form_submission_id')->unsigned();
-            $table->string('row_name',64)->nullable();
+            $table->string('row_name', 64)->index();
             $table->integer('group_index')->unsigned()->nullable(); // Used for cloneable RowGroups
-            $table->string('field_name', 100);
+            $table->string('field_name', 100)->index();
 
             // Different types of value
             $table->text('value')->nullable();
@@ -39,7 +39,8 @@ class CreateFormSubmissionFieldsTable extends Migration
             $table->index([
                 'form_submission_id',
                 'row_name',
-                'group_index','field_name'
+                'group_index',
+                'field_name'
             ], 'value_identifier_index');
 
         });
