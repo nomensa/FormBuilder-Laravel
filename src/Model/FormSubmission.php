@@ -21,6 +21,15 @@ class FormSubmission extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
+    public function formParticipants()
+    {
+        return $this->hasMany('App\FormParticipant', 'form_submission_id');
+    }
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function formSubmissionFields()
     {
         return $this->hasMany('App\FormSubmissionField', 'form_submission_id');
