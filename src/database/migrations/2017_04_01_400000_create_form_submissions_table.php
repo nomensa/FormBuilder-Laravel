@@ -18,7 +18,8 @@ class CreateFormSubmissionsTable extends Migration
         Schema::create($this->table, function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('form_instance_id')->unsigned();
+            $table->integer('form_instance_id')->unsigned(); // This will be deprecated in future
+            $table->integer('form_version_id')->unsigned();
 
             $table->integer('user_id')->unsigned()->nullable();
             $table->integer('form_submission_status_id')->default(1);
@@ -40,6 +41,10 @@ class CreateFormSubmissionsTable extends Migration
                 ->references('id')
                 ->on('form_instances')
                 ->onDelete('cascade');
+
+            $table->foreign('form_version_id')
+                ->references('id')
+                ->on('form_versions');
         });
     }
 

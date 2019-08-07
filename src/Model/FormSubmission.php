@@ -19,6 +19,15 @@ class FormSubmission extends Model
 
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function formVersion()
+    {
+        return $this->belongsTo('App\FormVersion');
+    }
+
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function formParticipants()

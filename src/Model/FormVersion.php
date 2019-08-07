@@ -77,6 +77,15 @@ class FormVersion extends Model
 
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function formSubmissions()
+    {
+        return $this->hasMany('App\FormSubmission');
+    }
+
+
+    /**
      * @return int
      */
     public function formInstanceCount() : int
@@ -98,10 +107,7 @@ class FormVersion extends Model
         if (!is_null($this->formSubmissionCount)) {
             return $this->formSubmissionCount;
         }
-        return $this->formSubmissionCount = DB::table('form_submissions')
-            ->leftJoin('form_instances','form_instance_id','=','form_instances.id')
-            ->where('form_version_id',$this->id)
-            ->count();
+        return $this->formSubmissionCount = $this->formSubmissions()->count();
     }
 
 
